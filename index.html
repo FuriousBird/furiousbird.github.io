@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="p5.min.js"></script>
+</head>
+
+<body>
+
+    <script>
+        let spriteMap;
+        let chars;
+        function preload() {
+            spriteImg = loadImage('sprites.png');
+            spriteMap = loadJSON("sprite.map.json");
+            console.log(spriteMap)
+
+        }
+
+        function setup() {
+            for (const [key, value] of Object.entries(spriteMap)) {
+                console.log(`loading ${key}`)
+                let img = spriteImg.get(value.pos[0], value.pos[1], value.size[0], value.size[1]);
+                spriteMap[key]["img"] = img;
+            }
+            chars = [spriteMap.bob]
+            createCanvas(400, 600);
+        }
+
+        function draw() {
+            background(220);
+            //draw the character
+            i = 0
+            w = width / 2
+            char = chars[i]
+            og_w = char.size[0]
+            og_h = char.size[1]
+            og_x = char.origin[0]
+            og_y = char.origin[1]
+            k = w / og_w
+            image(char.img, width / 2 - og_x * k, height / 2 + k * og_h / 2 - og_y * k, w, k * og_h)
+        }
+    </script>
+</body>
+
+</html>
