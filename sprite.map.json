@@ -12,6 +12,298 @@
         "origin": [
             114,
             379
+        ],
+        "hat": [-10, -320],
+        "eyeLevel": [
+            30, -260
+        ]
+    },
+    "rob": {
+        "desc": "tall boi",
+        "pos": [
+            440,
+            750
+        ],
+        "size": [
+            228,
+            470
+        ],
+        "origin": [
+            114,
+            460
+        ],
+        "hat": [
+            10, -380
+        ],
+        "eyeLevel": [
+            50, -300
+        ]
+    },
+    "mob": {
+        "desc": "square boi",
+        "pos": [
+            680,
+            830
+        ],
+        "size": [
+            228,
+            400
+        ],
+        "origin": [
+            114,
+            375
+        ],
+        "hat": [
+            0, -320
+        ],
+        "eyeLevel": [
+            40, -230
+        ]
+    },
+    "sob": {
+        "desc": "cry boi",
+        "pos": [
+            920,
+            830
+        ],
+        "size": [
+            228,
+            400
+        ],
+        "origin": [
+            114,
+            385
+        ],
+        "hat": [
+            10, -260
+        ],
+        "eyeLevel": [
+            80, -210
+        ]
+    },
+    "leftButton": {
+        "desc": "left menu button",
+        "pos": [
+            231,
+            1344
+        ],
+        "size": [
+            100,
+            136
+        ],
+        "origin": [
+            50,
+            67
+        ]
+    },
+    "rightButton": {
+        "desc": "right menu button",
+        "pos": [
+            350,
+            1344
+        ],
+        "size": [
+            100,
+            136
+        ],
+        "origin": [
+            40,
+            67
+        ]
+    },
+    "coneHat": {
+        "desc": "a hat made of cone",
+        "pos": [
+            1311,
+            277
+        ],
+        "size": [
+            200,
+            200
+        ],
+        "origin": [
+            100,
+            180
+        ]
+    },
+    "duckHat": {
+        "desc": "a hat made of duck",
+        "pos": [
+            1055,
+            309
+        ],
+        "size": [
+            210,
+            210
+        ],
+        "origin": [
+            100,
+            150
+        ]
+    },
+    "coolHat": {
+        "desc": "a very dripped hat",
+        "pos": [
+            1051,
+            510
+        ],
+        "size": [
+            180,
+            125
+        ],
+        "origin": [
+            110,
+            100
+        ]
+    },
+    "copHat": {
+        "desc": "a detective hat",
+        "pos": [
+            1042,
+            672
+        ],
+        "size": [
+            180,
+            150
+        ],
+        "origin": [
+            110,
+            100
+        ]
+    },
+    "crownHat": {
+        "desc": "a detective hat",
+        "pos": [
+            1300,
+            480
+        ],
+        "size": [
+            180,
+            150
+        ],
+        "origin": [
+            90,
+            130
+        ]
+    },
+    "shroomHat": {
+        "desc": "a stylish mushroom hat",
+        "pos": [
+            1031,
+            71
+        ],
+        "size": [
+            320,
+            200
+        ],
+        "origin": [
+            160,
+            150
+        ]
+    },
+    "witchHat": {
+        "desc": "a stylish witch hat",
+        "pos": [
+            1350,
+            55
+        ],
+        "size": [
+            320,
+            200
+        ],
+        "origin": [
+            160,
+            150
+        ]
+    },
+    "boxHat": {
+        "desc": "a stylish cardboard hat",
+        "pos": [
+            1720,
+            55
+        ],
+        "size": [
+            260,
+            220
+        ],
+        "origin": [
+            130,
+            140
+        ]
+    },
+    "glassHat": {
+        "desc": "stylish sunglasses hat",
+        "pos": [
+            1520,
+            316
+        ],
+        "size": [
+            220,
+            130
+        ],
+        "origin": [
+            110,
+            65
+        ]
+    },
+    "eyeDefaultMedium": {
+        "desc": "the default medium sized eye",
+        "pos": [
+            314,
+            546
+        ],
+        "size": [
+            80,
+            80
+        ],
+        "origin": [
+            50,
+            40
+        ]
+    },
+    "eyeClosedMedium": {
+        "desc": "the closed medium sized eye",
+        "pos": [
+            600,
+            546
+        ],
+        "size": [
+            80,
+            80
+        ],
+        "origin": [
+            50,
+            30
+        ]
+    },
+    "eyeSeriousMedium": {
+        "desc": "the serious medium sized eye",
+        "pos": [
+            529,
+            382
+        ],
+        "size": [
+            100,
+            80
+        ],
+        "origin": [
+            65,
+            45
+        ]
+    },
+    "eyeWhiteMedium": {
+        "desc": "the white medium sized eye",
+        "pos": [
+            655,
+            387
+        ],
+        "size": [
+            90,
+            80
+        ],
+        "origin": [
+            60,
+            40
         ]
     }
 }

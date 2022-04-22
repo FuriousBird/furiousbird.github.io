@@ -7,18 +7,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="p5.min.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+    <div id="displayzone">
+
+    </div>
 
     <script>
+        Number.prototype.mod = function(n) {
+            return ((this % n) + n) % n;
+        };
+
+        let myCanvas;
         let spriteMap;
         let chars;
+        let hats;
+        let eyes;
+        let characterBuild;
+        let previousBuild;
+
+        let hitboxes = [];
+        const buttonWidth = 30;
+
         function preload() {
             spriteImg = loadImage('sprites.png');
             spriteMap = loadJSON("sprite.map.json");
             console.log(spriteMap)
-
         }
 
         function setup() {
@@ -27,22 +43,198 @@
                 let img = spriteImg.get(value.pos[0], value.pos[1], value.size[0], value.size[1]);
                 spriteMap[key]["img"] = img;
             }
-            chars = [spriteMap.bob]
-            createCanvas(400, 600);
+            characterBuild = [0, 0, 4]
+            chars = [spriteMap.bob, spriteMap.rob, spriteMap.mob, spriteMap.sob]
+            hats = [
+                spriteMap.coolHat,
+                spriteMap.witchHat,
+                spriteMap.coneHat,
+                spriteMap.copHat,
+                spriteMap.boxHat,
+                spriteMap.duckHat,
+                spriteMap.crownHat,
+                spriteMap.shroomHat,
+                spriteMap.glassHat
+            ]
+            eyes = [spriteMap.eyeDefaultMedium, spriteMap.eyeSeriousMedium, spriteMap.eyeWhiteMedium]
+            myCanvas = createCanvas(400, 600);
+            myCanvas.parent("displayzone")
         }
 
+        //preview de sprite avec points de debugging & accessoires de perso
+        //utile pour écrire le sprite.map.json
+        function preview(sprite, pos, w) {
+            let og_w = sprite.size[0] || 50
+            let og_h = sprite.size[1] || 50
+            let og_x = sprite.origin[0] || 0
+            let og_y = sprite.origin[1] || 0
+            let k = w / og_w
+            image(sprite.img, pos[0] - og_x * k, pos[1] - og_y * k, w, k * og_h)
+            noFill()
+            stroke("black")
+            strokeWeight(2)
+            rect(pos[0] - og_x * k, pos[1] - og_y * k, w, k * og_h)
+            noStroke()
+            fill("red")
+            circle(pos[0], pos[1], 5)
+            if (sprite.hat) {
+                preview(spriteMap.coneHat, [pos[0] + sprite.hat[0] * k, pos[1] + sprite.hat[1] * k, 5], 100 * w / 100)
+                noStroke()
+                fill('rgb(0,255,0)');
+                circle(pos[0] + sprite.hat[0] * k, pos[1] + sprite.hat[1] * k, 5)
+            }
+            if (sprite.eyeLevel) {
+                let eyeSprite = spriteMap.eyeDefaultMedium
+                preview(eyeSprite, [pos[0] + sprite.eyeLevel[0] * k, pos[1] + sprite.eyeLevel[1] * k, 5], 30 * w / 100)
+                preview(eyeSprite, [pos[0] - sprite.eyeLevel[0] * k, pos[1] + sprite.eyeLevel[1] * k, 5], 30 * w / 100)
+                noStroke()
+                fill('rgb(0,255,0)');
+                circle(pos[0] + sprite.hat[0] * k, pos[1] + sprite.hat[1] * k, 5)
+            }
+        }
+
+        //dessin de sprite simple sans debugging
+        function draw_sprite(sprite, pos, w) {
+            let og_w = sprite.size[0] || 50
+            let og_h = sprite.size[1] || 50
+            let og_x = sprite.origin[0] || 0
+            let og_y = sprite.origin[1] || 0
+            let k = w / og_w
+            image(sprite.img, pos[0] - og_x * k, pos[1] - og_y * k, w, k * og_h)
+        }
+
+        //code comparaison de listes sur internet
+        function arrayEquals(a, b) {
+            return Array.isArray(a) &&
+                Array.isArray(b) &&
+                a.length === b.length &&
+                a.every((val, index) => val === b[index]);
+        }
+
+        //affichage du jeu
+        function render() {
+            let isnewbuild = !(arrayEquals(previousBuild, characterBuild));
+
+            let charWidth = 100
+            let charSprite = chars[characterBuild[0].mod(chars.length)]
+            let og_w = charSprite.size[0] || 50
+            let og_h = charSprite.size[1] || 50
+            let og_x = charSprite.origin[0] || 0
+            let og_y = charSprite.origin[1] || 0
+            let k = charWidth / og_w
+            let charHeight = k * og_h
+            let pos = [width / 2, height - 200]
+            let displayX = pos[0] - og_x * k
+            let displayY = pos[1] - og_y * k
+            image(charSprite.img, displayX, displayY, charWidth, charHeight)
+
+            /* noFill()
+            stroke("black")
+            strokeWeight(2)
+            rect(pos[0] - og_x * k, pos[1] - og_y * k, w, k * og_h)
+            noStroke()
+            fill("red")
+            circle(pos[0],pos[1],5) */
+            let leftPos = [displayX - 20, displayY + charSprite.origin[1] * k - spriteMap.leftButton.size[1] * k / 2];
+            let rightPos = [displayX + charWidth + 20, displayY + charSprite.origin[1] * k - spriteMap.rightButton.size[1] * k / 2];
+            preview(spriteMap.leftButton, leftPos, buttonWidth)
+            preview(spriteMap.rightButton, rightPos, buttonWidth)
+            if (isnewbuild) {
+                console.log("del");
+                hitboxes = []
+                hitboxes.push([leftPos, () => {
+                    characterBuild[0] = (characterBuild[0] - 1).mod(chars.length)
+                }])
+                hitboxes.push([rightPos, () => {
+                    characterBuild[0] = (characterBuild[0] + 1).mod(chars.length)
+                }])
+            }
+            if (charSprite.hat) {
+                let hatSprite = hats[characterBuild[2].mod(hats.length)]
+                draw_sprite(hatSprite, [pos[0] + charSprite.hat[0] * k, pos[1] + charSprite.hat[1] * k], 100 * charWidth / 100)
+                    /* noStroke()
+                    fill('rgb(0,255,0)');
+                    circle(pos[0]+charSprite.hat[0]*k,pos[1]+charSprite.hat[1]*k,5) */
+                leftPos = [displayX - 20, pos[1] + charSprite.hat[1] * k - 20];
+                rightPos = [displayX + charWidth + 20, pos[1] + charSprite.hat[1] * k - 20];
+                preview(spriteMap.leftButton, leftPos, buttonWidth)
+                preview(spriteMap.rightButton, rightPos, buttonWidth)
+                if (isnewbuild) {
+                    hitboxes.push([leftPos, () => {
+                        characterBuild[2] = (characterBuild[2] - 1).mod(hats.length)
+                    }])
+                    hitboxes.push([rightPos, () => {
+                        characterBuild[2] = (characterBuild[2] + 1).mod(hats.length)
+                    }])
+                }
+            }
+            if (charSprite.eyeLevel) {
+                let eyeSprite = eyes[characterBuild[1].mod(eyes.length)]
+
+                draw_sprite(eyeSprite, [pos[0] + charSprite.eyeLevel[0] * k, pos[1] + charSprite.eyeLevel[1] * k + 10], 30 * charWidth / 100)
+                draw_sprite(eyeSprite, [pos[0] - charSprite.eyeLevel[0] * k, pos[1] + charSprite.eyeLevel[1] * k + 10], 30 * charWidth / 100)
+                    /* noStroke()
+                    fill('rgb(0,255,0)');
+                    circle(pos[0]+charSprite.hat[0]*k,pos[1]+charSprite.hat[1]*k,5) */
+                leftPos = [displayX - 20, pos[1] + charSprite.eyeLevel[1] * k];
+                rightPos = [displayX + charWidth + 20, pos[1] + charSprite.eyeLevel[1] * k];
+                preview(spriteMap.leftButton, leftPos, buttonWidth)
+                preview(spriteMap.rightButton, rightPos, buttonWidth)
+                if (isnewbuild) {
+                    hitboxes.push([leftPos, () => {
+                        characterBuild[1] = (characterBuild[1] - 1).mod(eyes.length)
+                    }])
+                    hitboxes.push([rightPos, () => {
+                        characterBuild[1] = (characterBuild[1] + 1).mod(eyes.length)
+                    }])
+                }
+            }
+            if (isnewbuild) {
+                //Array.from() => shallow copy, snn MAJ en mm tps que le build 
+                previousBuild = Array.from(characterBuild);
+
+            }
+
+        }
+
+        //la boucle d'affichage
         function draw() {
             background(220);
-            //draw the character
-            i = 0
+
+            render()
+                //draw the character
+            i = second() % 4
             w = width / 2
             char = chars[i]
-            og_w = char.size[0]
-            og_h = char.size[1]
-            og_x = char.origin[0]
-            og_y = char.origin[1]
-            k = w / og_w
-            image(char.img, width / 2 - og_x * k, height / 2 + k * og_h / 2 - og_y * k, w, k * og_h)
+            if (char) {
+                og_w = char.size[0]
+                og_h = char.size[1]
+                og_x = char.origin[0]
+                og_y = char.origin[1]
+                k = w / og_w
+                    //preview(char, [ width / 2, height*0.8], 150)
+            }
+            spritePreview = spriteMap.glassHat
+            pos = [width / 2 + Math.sin(millis() / 500) * width / 3, Math.sin(millis() / 1000) * 30 + 200]
+            preview(spritePreview, pos, 80)
+            preview(spritePreview, [50, 120], 50)
+
+        }
+
+        function mouseClicked() {
+            for (i of hitboxes) {
+                console.log(mouseX, mouseY)
+                pos = i[0]
+                let xValid = (mouseX >= pos[0] - buttonWidth / 2 && mouseX <= pos[0] + buttonWidth / 2)
+                let yValid = (mouseY >= pos[1] - buttonWidth / 2 && mouseY <= pos[1] + buttonWidth / 2)
+                if (xValid && yValid) {
+                    i[1]()
+                    console.log("click")
+                    console.log(previousBuild, characterBuild);
+
+                    break
+                }
+            }
         }
     </script>
 </body>
