@@ -51,6 +51,8 @@
         let menu_open = false;
         let screen_blob;
 
+        let dl_link = document.getElementById("blob_dl");
+
         function screen() {
             document.getElementById("dl_popup").className = "";
             screen_blob = undefined;
@@ -248,7 +250,6 @@
 
                     img.src = url;
 
-                    let dl_link = document.getElementById("blob_dl");
                     dl_link.href = url;
                     dl_link.download = "character.png";
                 });
@@ -317,6 +318,9 @@
 
         let dl_popup = document.getElementById("dl_popup");
         dl_popup.addEventListener("click", (e) => {
+            if (e.target !== dl_popup) {
+                return;
+            }
             if (menu_open) {
                 console.log("e")
                 screen_blob = undefined;
