@@ -6,20 +6,34 @@ html {
     height: 100%;
 }
 
+a {
+    color: rgb(255, 60, 0);
+    font-weight: bold;
+}
+
+.credits {
+    position: absolute;
+    z-index: 20;
+    left: 0;
+    bottom: 0;
+    padding: 10px;
+}
+
 #displayzone {
     position: relative;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+    canvas {
+        position: relative;
+        left: 50%;
+        transform: translate(-50%);
+        //meme couleur que arriere plan pour eviter flash lors de capture de l'image
+        background-color: #dcdcdc;
+    }
 }
 
-#displayzone canvas {
-    position: relative;
-    left: 50%;
-    transform: translate(-50%);
-}
-
-#outputform {
+#dl_popup {
     position: fixed;
     z-index: 10;
     left: 0;
@@ -27,29 +41,25 @@ html {
     top: 0;
     bottom: 0;
     background-color: transparent;
-    transform: scale(1);
-    transition: transform 1s;
     padding: 10px;
-    &.hidden {
-        display: none;
-        transform: scale(0);
-    }
-    --color-A:#606cbc00;
-    --color-B:#0000003a;
-    background: repeating-linear-gradient( -45deg, var(--color-A), var(--color-A) 28px, var(--color-B) 28px, var(--color-B) 30px);
 }
 
-#outputform {
+#dl_popup {
     display: flex;
     flex-flow: row nowrap;
     justify-content: center;
     align-items: center;
+    &.hidden .content {
+        transform: scale(0) rotate(45deg);
+    }
     .content {
         display: flex;
         flex-flow: column nowrap;
         text-align: center;
         padding: 20px;
         background-color: white;
+        transform: scale(1);
+        transition: transform 0.2s;
         //border: 5px #dcdcdc solid;
         .image {
             width: 200px;
@@ -65,30 +75,4 @@ html {
             }
         }
     }
-}
-
-.inline-input {
-    border: 2px solid gray;
-    padding: 2px;
-    background-color: white;
-    border-radius: 5px;
-    display: inline-block;
-    * {
-        float: left;
-    }
-    input {
-        border: none;
-        background-color: transparent;
-    }
-    input:focus {
-        outline: none;
-    }
-    p {
-        width: 0;
-        overflow: visible;
-        margin: 0;
-        padding: 0;
-        margin-left: 5px;
-    }
-    padding-right: 2em;
 }

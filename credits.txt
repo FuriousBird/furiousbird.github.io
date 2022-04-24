@@ -1,0 +1,8 @@
+Code:
+ - FuriousBird
+
+Graphismes:
+ - FuriousBird
+
+Musique:
+ - LuckyLuke (mrc bcp)

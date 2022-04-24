@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <div id="outputform" class="hidden">
+    <div id="dl_popup" class="hidden">
         <div class="content">
             <div class="image">
                 <img src="sprites.png" id="char_image" alt="Preview Of Your Character">
@@ -22,14 +22,19 @@
         </div>
     </div>
     <div id="displayzone">
-
+        <!-- Zone pour le canvas -->
     </div>
+    <a href="/credits.txt" class="credits" target="_blank">credits</a>
+
 
     <script>
         //fonction modulo comme dans python
         Number.prototype.mod = function(n) {
             return ((this % n) + n) % n;
         };
+
+        //son
+        let soundplaying;
 
         //def des variables globales
         let myCanvas;
@@ -47,7 +52,7 @@
         let screen_blob;
 
         function screen() {
-            document.getElementById("outputform").className = "";
+            document.getElementById("dl_popup").className = "";
             screen_blob = undefined;
             menu_open = true;
         }
@@ -56,6 +61,7 @@
         function preload() {
             spriteImg = loadImage('sprites.png');
             spriteMap = loadJSON("sprite.map.json");
+            soundTrack = createAudio('sound.mp3');
         }
 
         //une fois l'appli prête
@@ -84,6 +90,7 @@
             eyes = [spriteMap.eyeDefaultMedium, spriteMap.eyeSeriousMedium, spriteMap.eyeWhiteMedium];
             myCanvas = createCanvas(400, 600);
             myCanvas.parent("displayzone");
+            console.log(soundTrack);
         }
 
         //preview de sprite avec points de debugging & accessoires de perso
@@ -300,15 +307,21 @@
                     }
                 }
             }
+            //on lance la musique lors du 1er clic pour ne pas demander de permissions au navigateur
+            if (!soundplaying) {
+                soundTrack.elt.loop = true
+                soundTrack.elt.play()
+            }
+            soundplaying = true;
         }
 
-        let outputform = document.getElementById("outputform");
-        outputform.addEventListener("click", (e) => {
+        let dl_popup = document.getElementById("dl_popup");
+        dl_popup.addEventListener("click", (e) => {
             if (menu_open) {
                 console.log("e")
                 screen_blob = undefined;
                 menu_open = false;
-                document.getElementById("outputform").className = "hidden";
+                document.getElementById("dl_popup").className = "hidden";
             }
         })
     </script>
