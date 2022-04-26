@@ -1,8 +1,3 @@
-Code:
- - FuriousBird
-
-Graphismes:
- - FuriousBird
-
-Musique:
- - LuckyLuke (mrc bcp)
+Générateur de personnage:
+ - FuriousBird (Code & Dessin) 
+ - LuckyLuke (Musique) https://www.instagram.com/luckyluke_015/

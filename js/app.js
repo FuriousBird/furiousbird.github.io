@@ -40,6 +40,7 @@ function preload() {
 
 //une fois l'appli prête
 function setup() {
+    soundTrack.volume(0.2);
     //on associe sprite et images
     for (const [key, value] of Object.entries(spriteMap)) {
         console.log(`loading ${key}`);
@@ -219,6 +220,8 @@ function render() {
             let img = document.getElementById("char_image");
             //sur chrome/webkit c'est webkitURL
 
+            //https://developer.mozilla.org/fr/docs/Web/JavaScript/Guide/Expressions_and_Operators#op%C3%A9rateur_conditionnel_ternaire
+            //(condition ? val1 : val2) question de compatibilite
             let url = (window.URL ? URL : webkitURL).createObjectURL(blob);
 
             (window.URL ? URL : webkitURL).revokeObjectURL(screen_blob_url);
@@ -315,7 +318,10 @@ document.addEventListener('visibilitychange', e => {
         if (document.visibilityState == "hidden") {
             soundTrack.elt.pause()
         } else {
-            soundTrack.elt.play()
+            setTimeout(() => {
+                if (document.visibilityState == "visible") { soundTrack.elt.play() }
+            }, 500);
+
         }
 
     }
