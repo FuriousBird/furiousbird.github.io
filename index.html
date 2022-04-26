@@ -21,9 +21,6 @@
             </div>
         </div>
     </div>
-    <div id="displayzone">
-        <!-- Zone pour le canvas -->
-    </div>
     <a href="/credits.txt" class="credits" target="_blank">credits</a>
 
 
@@ -91,7 +88,6 @@
             ];
             eyes = [spriteMap.eyeDefaultMedium, spriteMap.eyeSeriousMedium, spriteMap.eyeWhiteMedium];
             myCanvas = createCanvas(400, 600);
-            myCanvas.parent("displayzone");
             console.log(soundTrack);
         }
 
@@ -310,8 +306,11 @@
             }
             //on lance la musique lors du 1er clic pour ne pas demander de permissions au navigateur
             if (!soundplaying) {
-                soundTrack.elt.loop = true
-                soundTrack.elt.play()
+                soundTrack.elt.loop = true;
+                soundTrack.elt.play();
+                if (navigator.mediaSession.release) {
+                    navigator.mediaSession.release();
+                }
             }
             soundplaying = true;
         }
@@ -328,6 +327,17 @@
                 document.getElementById("dl_popup").className = "hidden";
             }
         })
+
+        document.addEventListener('visibilitychange', e => {
+            if (soundplaying) {
+                if (document.visibilityState == "hidden") {
+                    soundTrack.elt.pause()
+                } else {
+                    soundTrack.elt.play()
+                }
+
+            }
+        });
     </script>
 </body>
 
