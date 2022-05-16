@@ -15,7 +15,8 @@ let eyes;
 let characterBuild;
 let previousBuild;
 
-let hitboxes = []; //liste des boutons et de leurs fonctions associées
+//liste des boutons et de leurs fonctions associées
+let hitboxes = []; 
 const buttonWidth = 30;
 
 let menu_open = false;
@@ -28,14 +29,14 @@ function screen() {
     menu_open = true;
     screen_blob_url = undefined;
     screen_cnt = 1
-
 }
 
-//prechargement des textures
+
 function preload() {
-    spriteImg = loadImage('sprites.png');
-    spriteMap = loadJSON("sprite.map.json");
-    soundTrack = createAudio('sound.mp3');
+    //prechargement des textures depuis github
+    spriteImg = loadImage('https://raw.githubusercontent.com/FuriousBird/furiousbird.github.io/main/sprites.png');
+    spriteMap = loadJSON("https://raw.githubusercontent.com/FuriousBird/furiousbird.github.io/main/sprite.map.json");
+    soundTrack = createAudio('https://raw.githubusercontent.com/FuriousBird/furiousbird.github.io/main/sound.mp3');
 }
 
 //une fois l'appli prête
@@ -208,7 +209,7 @@ function render() {
     }
 
     if (isnewbuild) {
-        //Array.from() => shallow copy, snn MAJ en mm tps que le build 
+        //Array.from() => shallow copy, snn il reste une référence à build
         previousBuild = Array.from(characterBuild);
 
     }
@@ -239,6 +240,9 @@ function render() {
     if (!menu_open) {
         let cam_pos = [pos[0], pos[1] + 50];
         draw_sprite(spriteMap.crownHat, cam_pos, 50)
+        textAlign(CENTER, TOP)
+        textSize(20)
+        text("photo", cam_pos[0], cam_pos[1]+20)
         hitboxes.push([cam_pos, () => {
             screen()
         }])
@@ -248,31 +252,11 @@ function render() {
 
 //la boucle d'affichage
 function draw() {
-    if ((!menu_open)) {
-        background(220);
-    } else if (!screen_blob_url) {
-        clear();
-    };
+    //on efface tout
+    clear();
 
-
+    //affichage du jeu lui même
     render();
-    //draw the character
-    // i = second() % 4
-    // w = width / 2
-    // char = chars[i]
-    // if (char) {
-    //     og_w = char.size[0]
-    //     og_h = char.size[1]
-    //     og_x = char.origin[0]
-    //     og_y = char.origin[1]
-    //     k = w / og_w
-    //         //preview(char, [ width / 2, height*0.8], 150)
-    // }
-    // spritePreview = spriteMap.glassHat
-    // pos = [width / 2 + Math.sin(millis() / 500) * width / 3, Math.sin(millis() / 1000) * 30 + 200]
-    // preview(spritePreview, pos, 80)
-    // preview(spritePreview, [50, 120], 50)
-
 }
 
 function mouseClicked() {
@@ -300,11 +284,17 @@ function mouseClicked() {
     soundplaying = true;
 }
 
+//dl_popup est un élément qui prend l'entièreté de l'écran
+//dans lequel s'affiche la popup de téléchargement du personnage
+//il s'agit ici de détecter si on clique dessus (à coté de la popup) afin de la fermer
 let dl_popup = document.getElementById("dl_popup");
+let popup_quit = document.getElementById("quit");
 dl_popup.addEventListener("click", (e) => {
-    if (e.target !== dl_popup) {
-        return;
+    //si l'element sélectionné n'est ni le bouton quitter, ni l'exterieur de la popup
+    if (e.target !== dl_popup && e.target !== popup_quit) {
+        return; //on quitte la fonction
     }
+    //sinon si le menu est ouvert:
     if (menu_open) {
         console.log("e")
         menu_open = false;
@@ -313,6 +303,8 @@ dl_popup.addEventListener("click", (e) => {
     }
 })
 
+//ici on pause le son lorsque l'on quitte l'onglet ou change d'application
+//TODO comment détecter mise en veille sur téléphone?
 document.addEventListener('visibilitychange', e => {
     if (soundplaying) {
         if (document.visibilityState == "hidden") {

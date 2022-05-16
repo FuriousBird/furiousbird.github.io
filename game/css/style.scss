@@ -52,8 +52,12 @@ main {
     flex-flow: row nowrap;
     justify-content: center;
     align-items: center;
-    &.hidden .content {
-        transform: scale(0) rotate(45deg);
+    background-color:transparent;
+    &.hidden {
+        background-color: transparent;
+        .content {
+            transform: scale(0) rotate(45deg);
+        }
     }
     .content {
         display: flex;
@@ -76,6 +80,26 @@ main {
                 object-fit: contain;
                 object-position: center;
             }
+        }
+        #quit{
+            display: flex;
+            position: fixed;
+            right: 0;
+            top:0;
+            width: 30px;
+            height: 30px;
+            color: #3d3d3d;
+            transform: translate(30%, -30%);
+            background-color: rgb(255, 60, 0);
+            box-shadow: 0px 0px 5px rgb(255, 60, 0);
+            border-radius: 100%;
+            &::before{
+                content:"×";
+                font-weight: bold;
+            }
+            justify-content: center;
+            align-items: center;
+
         }
     }
 }
