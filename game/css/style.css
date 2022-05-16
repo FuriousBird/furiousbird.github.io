@@ -12,7 +12,7 @@ html {
 }
 
 a {
-  color: #ff3c00;
+  color: rgb(255, 60, 0);
   font-weight: bold;
 }
 
@@ -31,13 +31,11 @@ main {
   max-height: 100vh;
   overflow: hidden;
 }
-
 main canvas {
   position: relative;
   left: 50%;
   top: 50%;
-  -webkit-transform: translate(-50%, -50%);
-          transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
   background-color: #dcdcdc;
 }
 
@@ -56,50 +54,27 @@ main canvas {
 }
 
 #dl_popup {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-flow: row nowrap;
-          flex-flow: row nowrap;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
   background-color: transparent;
 }
-
 #dl_popup.hidden {
   background-color: transparent;
 }
-
 #dl_popup.hidden .content {
-  -webkit-transform: scale(0) rotate(45deg);
-          transform: scale(0) rotate(45deg);
+  transform: scale(0) rotate(45deg);
 }
-
 #dl_popup .content {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-flow: column nowrap;
-          flex-flow: column nowrap;
+  flex-flow: column nowrap;
   text-align: center;
   padding: 20px;
   background-color: white;
-  -webkit-transform: scale(1);
-          transform: scale(1);
-  -webkit-transition: -webkit-transform 0.2s;
-  transition: -webkit-transform 0.2s;
+  transform: scale(1);
   transition: transform 0.2s;
-  transition: transform 0.2s, -webkit-transform 0.2s;
 }
-
 #dl_popup .content .image {
   width: 200px;
   height: 300px;
@@ -107,7 +82,6 @@ main canvas {
   margin: 10px;
   background-color: #dcdcdc;
 }
-
 #dl_popup .content .image img {
   width: 100%;
   height: 100%;
@@ -116,10 +90,7 @@ main canvas {
   -o-object-position: center;
      object-position: center;
 }
-
 #dl_popup .content #quit {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
   position: fixed;
   right: 0;
@@ -127,22 +98,21 @@ main canvas {
   width: 30px;
   height: 30px;
   color: #3d3d3d;
-  -webkit-transform: translate(30%, -30%);
-          transform: translate(30%, -30%);
-  background-color: #ff3c00;
-  -webkit-box-shadow: 0px 0px 5px #ff3c00;
-          box-shadow: 0px 0px 5px #ff3c00;
+  transform: translate(30%, -30%);
+  background-color: rgb(255, 60, 0);
+  box-shadow: 0px 0px 5px rgb(255, 60, 0);
   border-radius: 100%;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  justify-content: center;
+  align-items: center;
 }
-
 #dl_popup .content #quit::before {
   content: "×";
   font-weight: bold;
 }
-/*# sourceMappingURL=style.css.map */
+
+#p5_loading {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}/*# sourceMappingURL=style.css.map */

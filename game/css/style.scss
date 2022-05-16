@@ -52,7 +52,7 @@ main {
     flex-flow: row nowrap;
     justify-content: center;
     align-items: center;
-    background-color:transparent;
+    background-color: transparent;
     &.hidden {
         background-color: transparent;
         .content {
@@ -81,11 +81,11 @@ main {
                 object-position: center;
             }
         }
-        #quit{
+        #quit {
             display: flex;
             position: fixed;
             right: 0;
-            top:0;
+            top: 0;
             width: 30px;
             height: 30px;
             color: #3d3d3d;
@@ -93,13 +93,19 @@ main {
             background-color: rgb(255, 60, 0);
             box-shadow: 0px 0px 5px rgb(255, 60, 0);
             border-radius: 100%;
-            &::before{
-                content:"×";
+            &::before {
+                content: "×";
                 font-weight: bold;
             }
             justify-content: center;
             align-items: center;
-
         }
     }
+}
+
+#p5_loading {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }

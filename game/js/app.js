@@ -16,7 +16,7 @@ let characterBuild;
 let previousBuild;
 
 //liste des boutons et de leurs fonctions associées
-let hitboxes = []; 
+let hitboxes = [];
 const buttonWidth = 30;
 
 let menu_open = false;
@@ -34,9 +34,9 @@ function screen() {
 
 function preload() {
     //prechargement des textures depuis github
-    spriteImg = loadImage('https://raw.githubusercontent.com/FuriousBird/furiousbird.github.io/main/sprites.png');
-    spriteMap = loadJSON("https://raw.githubusercontent.com/FuriousBird/furiousbird.github.io/main/sprite.map.json");
-    soundTrack = createAudio('https://raw.githubusercontent.com/FuriousBird/furiousbird.github.io/main/sound.mp3');
+    spriteImg = loadImage('https://raw.githubusercontent.com/FuriousBird/furiousbird.github.io/main/game/sprites.png');
+    spriteMap = loadJSON("https://raw.githubusercontent.com/FuriousBird/furiousbird.github.io/main/game/sprite.map.json");
+    soundTrack = createAudio('https://raw.githubusercontent.com/FuriousBird/furiousbird.github.io/main/game/sound.mp3');
 }
 
 //une fois l'appli prête
@@ -242,7 +242,7 @@ function render() {
         draw_sprite(spriteMap.crownHat, cam_pos, 50)
         textAlign(CENTER, TOP)
         textSize(20)
-        text("photo", cam_pos[0], cam_pos[1]+20)
+        text("photo", cam_pos[0], cam_pos[1] + 20)
         hitboxes.push([cam_pos, () => {
             screen()
         }])
@@ -291,7 +291,7 @@ let dl_popup = document.getElementById("dl_popup");
 let popup_quit = document.getElementById("quit");
 dl_popup.addEventListener("click", (e) => {
     //si l'element sélectionné n'est ni le bouton quitter, ni l'exterieur de la popup
-    if (e.target !== dl_popup && e.target !== popup_quit) {
+    if (e.target !== dl_popup &&  e.target !== popup_quit) {
         return; //on quitte la fonction
     }
     //sinon si le menu est ouvert:
