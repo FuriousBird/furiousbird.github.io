@@ -3,6 +3,37 @@ Number.prototype.mod = function(n) {
     return ((this % n) + n) % n;
 };
 
+function getFittedObjSizeInfo(obj) {
+    const obj_size = obj.getBoundingClientRect();
+    const og_width = obj.width
+    const og_height = obj.height
+    const og_ratio = og_height / og_width
+    const w = obj_size.width
+    const h = obj_size.height
+    const new_ratio = h / w
+    if (new_ratio > og_ratio) {
+        var display_w = w;
+        var display_h = og_ratio * w;
+        console.log("e");
+    } else {
+        var display_h = h;
+        var display_w = (1 / og_ratio) * h;
+        console.log("b");
+    };
+
+    let f1 = display_w / og_width
+    let f2 = display_h / og_height
+    console.log(f1, f2);
+
+    let delta_h = h - display_h
+    let delta_w = w - display_w
+    return [f1, f2, delta_h, delta_w]
+}
+
+let scene = 1;
+
+
+//VARIABLES DU CREATEUR DE PERSONNAGE
 //son
 let soundplaying;
 
@@ -17,7 +48,7 @@ let previousBuild;
 
 //liste des boutons et de leurs fonctions associées
 let hitboxes = [];
-const buttonWidth = 30;
+const buttonWidth = 50;
 
 let menu_open = false;
 let screen_blob_url;
@@ -25,12 +56,24 @@ let screen_cnt = 0;
 
 let dl_link = document.getElementById("blob_dl");
 
+//VARIABLES DE JEU
+
+camX = 0
+camY = 0
+playerX = 0
+playerY = 0
+
+playerRot = 0
+
+groundY = 0
+
+//CODE DE L'APPLI
+//prendre une capture et ouvrir le menu capture
 function screen() {
     menu_open = true;
     screen_blob_url = undefined;
     screen_cnt = 1
 }
-
 
 function preload() {
     //prechargement des textures depuis github
@@ -64,7 +107,9 @@ function setup() {
         spriteMap.glassHat
     ];
     eyes = [spriteMap.eyeDefaultMedium, spriteMap.eyeSeriousMedium, spriteMap.eyeWhiteMedium];
-    myCanvas = createCanvas(400, 600);
+    myCanvas = createCanvas(1080, 720);
+    myCanvas.elt.style = "";
+    document.addEventListener("click", handleMouse)
     console.log(soundTrack);
 }
 
@@ -118,8 +163,13 @@ function arrayEquals(a, b) {
         a.every((val, index) => val === b[index]);
 }
 
+function changeScene(x) {
+    hitboxes = []
+    scene = x
+}
+
 //affichage du jeu
-function render() {
+function handleMenu() {
     //verification que le sprite n'a pas changé
     let isnewbuild = !(arrayEquals(previousBuild, characterBuild));
 
@@ -131,7 +181,7 @@ function render() {
     let og_y = charSprite.origin[1] || 0;
     let k = charWidth / og_w;
     let charHeight = k * og_h;
-    let pos = [width / 2, height - 200];
+    let pos = [width / 2, height / 2 + 100];
     let displayX = pos[0] - og_x * k;
     let displayY = pos[1] - og_y * k;
     image(charSprite.img, displayX, displayY, charWidth, charHeight);
@@ -174,19 +224,20 @@ function render() {
         if (!menu_open) {
             draw_sprite(spriteMap.leftButton, leftPos, buttonWidth)
             draw_sprite(spriteMap.rightButton, rightPos, buttonWidth)
+            if (isnewbuild) {
+                hitboxes.push([leftPos, () => {
+                    characterBuild[1] = (characterBuild[1] - 1).mod(eyes.length)
+                }])
+                hitboxes.push([rightPos, () => {
+                    characterBuild[1] = (characterBuild[1] + 1).mod(eyes.length)
+                }])
+            }
         }
-        if (isnewbuild) {
-            hitboxes.push([leftPos, () => {
-                characterBuild[1] = (characterBuild[1] - 1).mod(eyes.length)
-            }])
-            hitboxes.push([rightPos, () => {
-                characterBuild[1] = (characterBuild[1] + 1).mod(eyes.length)
-            }])
-        }
+
     }
     //si le sprite a une position définie pour le chapeau on l'affiche
     if (charSprite.hat) {
-        let hatSprite = hats[characterBuild[2].mod(hats.length)]
+        let hatSprite = hats[characterBuild[2].mod(hats.length)];
         draw_sprite(hatSprite, [pos[0] + charSprite.hat[0] * k, pos[1] + charSprite.hat[1] * k], 100 * charWidth / 100)
             /* noStroke()
             fill('rgb(0,255,0)');
@@ -194,19 +245,20 @@ function render() {
         leftPos = [displayX - 20, pos[1] + charSprite.hat[1] * k - 20];
         rightPos = [displayX + charWidth + 20, pos[1] + charSprite.hat[1] * k - 20];
         if (!menu_open) {
-            draw_sprite(spriteMap.leftButton, leftPos, buttonWidth)
-            draw_sprite(spriteMap.rightButton, rightPos, buttonWidth)
-        }
+            draw_sprite(spriteMap.leftButton, leftPos, buttonWidth);
+            draw_sprite(spriteMap.rightButton, rightPos, buttonWidth);
+            if (isnewbuild) {
+                hitboxes.push([leftPos, () => {
+                    characterBuild[2] = (characterBuild[2] - 1).mod(hats.length);
+                }]);
+                hitboxes.push([rightPos, () => {
+                    characterBuild[2] = (characterBuild[2] + 1).mod(hats.length);
+                }]);
+            };
+        };
 
-        if (isnewbuild) {
-            hitboxes.push([leftPos, () => {
-                characterBuild[2] = (characterBuild[2] - 1).mod(hats.length)
-            }])
-            hitboxes.push([rightPos, () => {
-                characterBuild[2] = (characterBuild[2] + 1).mod(hats.length)
-            }])
-        }
-    }
+
+    };
 
     if (isnewbuild) {
         //Array.from() => shallow copy, snn il reste une référence à build
@@ -215,9 +267,9 @@ function render() {
     }
 
     if (screen_cnt > 0) {
-        screen_cnt -= 1
+        screen_cnt -= 1;
         myCanvas.elt.toBlob(function(blob) {
-            console.log(blob)
+            console.log(blob);
             let img = document.getElementById("char_image");
             //sur chrome/webkit c'est webkitURL
 
@@ -227,7 +279,7 @@ function render() {
 
             (window.URL ? URL : webkitURL).revokeObjectURL(screen_blob_url);
 
-            screen_blob_url = url
+            screen_blob_url = url;
 
             img.src = url;
 
@@ -239,37 +291,65 @@ function render() {
 
     if (!menu_open) {
         let cam_pos = [pos[0], pos[1] + 50];
-        draw_sprite(spriteMap.crownHat, cam_pos, 50)
-        textAlign(CENTER, TOP)
-        textSize(20)
+        draw_sprite(spriteMap.crownHat, cam_pos, 50);
+        textAlign(CENTER, TOP);
+        textSize(20);
         text("photo", cam_pos[0], cam_pos[1] + 20)
-        hitboxes.push([cam_pos, () => {
-            screen()
-        }])
+        if (isnewbuild) {
+            hitboxes.push([cam_pos, () => {
+                screen();
+            }]);
+        }
+
     }
 
+}
+
+function handleGame() {
+    clear()
+    let charSprite = chars[characterBuild[0].mod(chars.length)];
+    draw_sprite(charSprite.img, [200, 200], 100);
 }
 
 //la boucle d'affichage
 function draw() {
     //on efface tout
     clear();
+    background(255, 204, 0);
 
     //affichage du jeu lui même
-    render();
+    if (scene === 1) {
+        handleMenu();
+    } else if (scene === 0) {
+        handleGame();
+    } else {
+        textAlign(CENTER, TOP)
+        textSize(20);
+        text("Invalid scene", width / 2, height / 2);
+    };
 }
 
-function mouseClicked() {
+function handleMouse(e) {
+    //ne pas toucher: une soirée de travail je sais même pas pk... (a réécrire proprement)
+    var rect = myCanvas.elt.getBoundingClientRect();
+    var mouseX = e.clientX - rect.left; //x position within the element.
+    var mouseY = e.clientY - rect.top; //y position within the element.
+    let sizeInfo = getFittedObjSizeInfo(myCanvas.elt);
+    let f1 = sizeInfo[0];
+    let f2 = sizeInfo[1];
+    let delta_w = sizeInfo[2];
+    let delta_h = sizeInfo[3];
+    let newMouseX = (mouseX - delta_h / 2) / f1 / 2;
+    let newMouseY = (mouseY - delta_w / 2) / f2 / 2;
+    console.log(newMouseX, newMouseY)
     if (!menu_open) {
         for (i of hitboxes) {
-            pos = i[0]
-            let xValid = (mouseX >= pos[0] - buttonWidth / 2 && mouseX <= pos[0] + buttonWidth / 2)
-            let yValid = (mouseY >= pos[1] - buttonWidth / 2 && mouseY <= pos[1] + buttonWidth / 2)
+            pos = i[0];
+            let xValid = (newMouseX >= pos[0] - buttonWidth / 2 && newMouseX <= pos[0] + buttonWidth / 2);
+            let yValid = (newMouseY >= pos[1] - buttonWidth / 2 && newMouseY <= pos[1] + buttonWidth / 2);
             if (xValid && yValid) {
-                i[1]()
-                console.log("click")
-                console.log(previousBuild, characterBuild);
-                break
+                i[1]();
+                break;
             }
         }
     }
@@ -282,7 +362,7 @@ function mouseClicked() {
         }
     }
     soundplaying = true;
-}
+};
 
 //dl_popup est un élément qui prend l'entièreté de l'écran
 //dans lequel s'affiche la popup de téléchargement du personnage
