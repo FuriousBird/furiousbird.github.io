@@ -1,81 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="welcome/css/style.css">
+    <script src="game/js/lib/p5.min.js"></script>
+    <link rel="stylesheet" href="game/css/style.css">
 </head>
+
 <body>
-    <div id="welcome">
-        <div id="accueil">
-            <section class="title"><h1>Créateur D'avatar</h1></section>
-            <section class="header">
-                <div class="left">
-                    <img src="welcome/img/avatar.png" alt="Avatar">
-                    <p>Crée ton avatar en 3 étapes: <br> - choisis ton personnage, <br> - son chapeau <br> - et son type d'yeux.
-                    <br><br>
-                    Rapide, Pratique, Efficace.<br>
-                    Pour un total de 108 combinaisons.
-                    <br><br>
-                    Tu peux ensuite le télécharger <br>et l'utiliser comme avatar ou tu veux!</p>
-                </div>
-                <div class="right">
-                    <button onclick="start_showoff()">Tutoriel</button>
-                    <button onclick='document.getElementById("welcome").className = "hidden"'>Jouer !</button>
-                </div>
-            </section>
-        </div>
-        <div id="showoff_container" class="hidden">
-            <div id="showoff" class="hidden">
-                <div id="showoff_img" style="background-image: url('welcome/sprites.png')">
-                </div>
-                <p id="showoff_txt"></p>
+    <div id="dl_popup" class="hidden">
+        <div class="content">
+            <div id="quit"></div>
+            <div class="image">
+                <img src="" id="char_image" alt="Preview Of Your Character">
+            </div>
+            <div class="text">
+                <a id="blob_dl" href="" download="" title="Download Character">Download</a>
             </div>
         </div>
-        
-        <script>
-            let accueil = document.getElementById("accueil");
-            let showoff_container = document.getElementById("showoff_container");
-            let showoff = document.getElementById("showoff");
-            let showoff_img = document.getElementById("showoff_img");
-            let showoff_txt = document.getElementById("showoff_txt");
-
-            let showoff_content = [
-                ["welcome/img/arrows.png", "Utilisez les flèches pour modifier votre personnage."],
-                ["welcome/img/crown.png", "Cliquez sur l'icone photo pour le télécharger."]
-            ];
-
-            function start_showoff(){
-                accueil.className = "hidden"
-                showoff_container.className = "";
-                showoff.className = "";
-                function showoff_do(idx){
-                    console.log(idx);
-                    if (idx<showoff_content.length){
-                        let todo = showoff_content[idx]
-                        showoff_img.style=`background-image: url('${todo[0]}')`
-                        showoff_txt.innerText = todo[1]
-                        showoff.className = "";
-                        setTimeout(() => {
-                            
-                            showoff.className = "hidden";
-                            setTimeout(() => {
-                                showoff_do(idx+1);
-                            }, 2000);
-                        }, 3000);
-                    } else{
-                        document.getElementById("welcome").className = "hidden"
-                        
-                    }
-                    
-                }
-
-                showoff_do(0);
-            }
-        </script>
     </div>
-    <iframe class="game_window" src="game.html" frameborder="0" width="100%" height="100%"></iframe>
+    <main></main>
+    <!--     <a href="credits.txt" class="credits" target="_blank">credits</a> -->
+    <script src="game/js/app.js"></script>
 </body>
+
 </html>

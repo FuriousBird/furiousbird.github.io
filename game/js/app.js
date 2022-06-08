@@ -123,8 +123,8 @@ function setup() {
         [spriteMap.picture_3, 1700, -350, 100, 1.05],
         [spriteMap.shroom, 1600, -100, 200, 1.06],
         [spriteMap.bush, 1700, -60, 256, 1.07],
-        [spriteMap.moss, 1400, -40, 227, 1.07],
-        [spriteMap.rock, 1550, -60, 227, 1.08],
+        [spriteMap.moss, 1400, -30, 227, 1.07],
+        [spriteMap.rock, 1550, -30, 227, 1.08],
     ]
 
     myCanvas = createCanvas(1080, 720);
@@ -311,7 +311,7 @@ function handleMenu() {
 
 let m = 70;
 let g = 9.81;
-let player_vel = [0, -250];
+let player_vel = [0, 0];
 let player_pos = [1600, 0];
 let cam_pos = [0, 0]
 let player_rot = 0;
@@ -323,7 +323,7 @@ let midair = false;
 let mapData;
 
 function handleGame() {
-    if ((pressedKeys[" "] || pressedKeys.z) && !midair) {
+    if ((pressedKeys[" "] || pressedKeys.z || pressedKeys.arrowup) && !midair) {
         player_vel[1] = -600;
         midair = true;
     } else if (pressedKeys.q || pressedKeys.arrowleft || pressedKeys.d || pressedKeys.arrowright) {
@@ -362,10 +362,10 @@ function handleGame() {
         //draw the map
     for (let index = 0; index < mapData.length; index++) {
         const element = mapData[index];
-        draw_sprite(element[0], [(element[1] + width / 2 - cam_pos[0]) * element[4], (element[2] + height / 2 + 100 - cam_pos[1]) * element[4]], element[3])
+        draw_sprite(element[0], [(element[1] - cam_pos[0]) * element[4] + width / 2, (element[2] - cam_pos[1]) * element[4] + height / 2 + 100], element[3])
     }
     //draw the player
-    let playerDisplayPos = [player_pos[0] + width / 2 - cam_pos[0], player_pos[1] + height / 2 + 100 - cam_pos[1]];
+    let playerDisplayPos = [(player_pos[0] - cam_pos[0]) * 1.1 + width / 2, (player_pos[1] - cam_pos[1]) * 1.1 + height / 2 + 100];
     translate(playerDisplayPos[0], playerDisplayPos[1]);
     if (player_vel[0] > 0) {
         scale(-1, 1);
