@@ -396,6 +396,21 @@
             323
         ]
     },
+    "rock2": {
+        "desc": "cool rock 2",
+        "pos": [
+            0,
+            2000
+        ],
+        "size": [
+            512,
+            394
+        ],
+        "origin": [
+            256,
+            394
+        ]
+    },
     "david": {
         "desc": "cool statue",
         "pos": [
@@ -409,6 +424,51 @@
         "origin": [
             137,
             643
+        ]
+    },
+    "moss": {
+        "desc": "cool moss",
+        "pos": [
+            512,
+            2000
+        ],
+        "size": [
+            512,
+            363
+        ],
+        "origin": [
+            256,
+            363
+        ]
+    },
+    "shroom": {
+        "desc": "cool mushroom",
+        "pos": [
+            1200,
+            1845
+        ],
+        "size": [
+            319,
+            512
+        ],
+        "origin": [
+            159,
+            512
+        ]
+    },
+    "camera": {
+        "desc": "cool camera",
+        "pos": [
+            1562,
+            1870
+        ],
+        "size": [
+            189,
+            148
+        ],
+        "origin": [
+            94,
+            74
         ]
     }
 }

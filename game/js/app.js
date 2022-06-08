@@ -32,10 +32,8 @@ function getFittedObjSizeInfo(obj) {
     return [f1, f2, delta_h, delta_w]
 }
 
-let scene = 0;
+let scene = 1;
 
-
-//VARIABLES DU CREATEUR DE PERSONNAGE
 //son
 let soundplaying;
 
@@ -47,6 +45,7 @@ let hats;
 let eyes;
 let characterBuild;
 let previousBuild;
+let camera_icon_pos;
 
 //liste des boutons et de leurs fonctions associées
 let hitboxes = [];
@@ -106,25 +105,33 @@ function setup() {
     ];
     eyes = [spriteMap.eyeDefaultMedium, spriteMap.eyeSeriousMedium, spriteMap.eyeWhiteMedium];
     mapData = [
-
         [spriteMap.bush, 250, -60, 512, 1.02],
         [spriteMap.pillar, 200, -60, 227, 1.04],
         [spriteMap.bush, 200, -30, 200, 1.06],
         [spriteMap.pillar, 600, -120, 180, 1.01],
         [spriteMap.bush, 800, -60, 400, 1.03],
-        [spriteMap.pillar, 900, -30, 250, 1.06],
+        [spriteMap.pillar, 900, -60, 250, 1.06],
         [spriteMap.rock, 850, -45, 350, 1.08],
         [spriteMap.david, 500, -60, 200, 1.05],
-        [spriteMap.picture_1, 480, -300, 80, 1.05],
-        [spriteMap.bush, 500, -30, 300, 1.08],
-        [spriteMap.picture_1, 900, -180, 100, 1.08]
-
-
+        [spriteMap.picture_1, 480, -300, 80, 1.06],
+        [spriteMap.bush, 500, -30, 300, 1.08], //here ends the first area
+        [spriteMap.bush, 1650, -100, 256, 1.01],
+        [spriteMap.shroom, 1500, -150, 300, 1.02],
+        [spriteMap.picture_3, 1400, -300, 100, 1.03],
+        [spriteMap.bush, 1400, -60, 256, 1.04],
+        [spriteMap.rock2, 1500, -60, 256, 1.05],
+        [spriteMap.picture_3, 1700, -350, 100, 1.05],
+        [spriteMap.shroom, 1600, -100, 200, 1.06],
+        [spriteMap.bush, 1700, -60, 256, 1.07],
+        [spriteMap.moss, 1400, -40, 227, 1.07],
+        [spriteMap.rock, 1550, -60, 227, 1.08],
     ]
+
     myCanvas = createCanvas(1080, 720);
     myCanvas.elt.style = "";
     document.addEventListener("click", handleMouse)
     console.log(soundTrack);
+    camera_icon_pos = [width - 50, 50];
     prevTime = new Date()
 }
 
@@ -284,28 +291,6 @@ function handleMenu() {
 
     }
 
-    if (screen_cnt > 0) {
-        screen_cnt -= 1;
-        myCanvas.elt.toBlob(function(blob) {
-            console.log(blob);
-            let img = document.getElementById("char_image");
-            //sur chrome/webkit c'est webkitURL
-
-            //https://developer.mozilla.org/fr/docs/Web/JavaScript/Guide/Expressions_and_Operators#op%C3%A9rateur_conditionnel_ternaire
-            //(condition ? val1 : val2) question de compatibilite
-            let url = (window.URL ? URL : webkitURL).createObjectURL(blob);
-
-            (window.URL ? URL : webkitURL).revokeObjectURL(screen_blob_url);
-
-            screen_blob_url = url;
-
-            img.src = url;
-
-            dl_link.href = url;
-            dl_link.download = "character.png";
-            document.getElementById("dl_popup").className = "";
-        });
-    }
     if (!menu_open) {
         let _ = [pos[0], pos[1] + 50];
         draw_sprite(spriteMap.crownHat, _, 50);
@@ -320,17 +305,6 @@ function handleMenu() {
 
     }
 
-    if (!menu_open) {
-        let camera_icon_pos = [width - 50, 50]
-        draw_sprite(spriteMap.crownHat, camera_icon_pos, 60);
-        if (isnewbuild) {
-            hitboxes.push([camera_icon_pos, () => {
-                screen();
-            }]);
-        }
-
-    }
-
 }
 
 //VARIABLES DE JEU
@@ -338,7 +312,7 @@ function handleMenu() {
 let m = 70;
 let g = 9.81;
 let player_vel = [0, -250];
-let player_pos = [700, 0];
+let player_pos = [1600, 0];
 let cam_pos = [0, 0]
 let player_rot = 0;
 
@@ -350,7 +324,7 @@ let mapData;
 
 function handleGame() {
     if ((pressedKeys[" "] || pressedKeys.z) && !midair) {
-        player_vel[1] = -400;
+        player_vel[1] = -600;
         midair = true;
     } else if (pressedKeys.q || pressedKeys.arrowleft || pressedKeys.d || pressedKeys.arrowright) {
         if (pressedKeys.q || pressedKeys.arrowleft) {
@@ -396,8 +370,16 @@ function handleGame() {
     if (player_vel[0] > 0) {
         scale(-1, 1);
     }
+    let playerW = 100;
     rotate(PI / 180 * Math.abs(player_rot));
-    draw_sprite(charSprite, [0, 0], 100);
+    draw_sprite(charSprite, [0, 0], playerW);
+    let eyeSprite = eyes[characterBuild[1].mod(eyes.length)];
+    let og_w = charSprite.size[0] || 50;
+    let k = playerW / og_w;
+    draw_sprite(eyeSprite, [charSprite.eyeLevel[0] * k, charSprite.eyeLevel[1] * k + 10], 30);
+    draw_sprite(eyeSprite, [-charSprite.eyeLevel[0] * k, charSprite.eyeLevel[1] * k + 10], 30);
+    let hatSprite = hats[characterBuild[2].mod(hats.length)];
+    draw_sprite(hatSprite, [charSprite.hat[0] * k, charSprite.hat[1] * k], 1.2 * playerW)
     resetMatrix();
 }
 
@@ -413,6 +395,7 @@ function draw() {
     clear();
     background(255, 204, 0);
 
+
     //affichage du jeu lui même
     if (scene === 1) {
         handleMenu();
@@ -423,6 +406,33 @@ function draw() {
         textSize(20);
         text("Invalid scene", width / 2, height / 2);
     };
+
+    if (screen_cnt > 0) {
+        screen_cnt -= 1;
+        myCanvas.elt.toBlob(function(blob) {
+            console.log(blob);
+            let img = document.getElementById("char_image");
+            //sur chrome/webkit c'est webkitURL
+
+            //https://developer.mozilla.org/fr/docs/Web/JavaScript/Guide/Expressions_and_Operators#op%C3%A9rateur_conditionnel_ternaire
+            //(condition ? val1 : val2) question de compatibilite
+            let url = (window.URL ? URL : webkitURL).createObjectURL(blob);
+
+            (window.URL ? URL : webkitURL).revokeObjectURL(screen_blob_url);
+
+            screen_blob_url = url;
+
+            img.src = url;
+
+            dl_link.href = url;
+            dl_link.download = "character.png";
+            document.getElementById("dl_popup").className = "";
+        });
+    }
+
+    if (!menu_open) {
+        draw_sprite(spriteMap.camera, camera_icon_pos, 60);
+    }
 }
 
 function handleMouse(e) {
@@ -438,8 +448,12 @@ function handleMouse(e) {
     let newMouseX = (mouseX - delta_h / 2) / f1 / 2;
     let newMouseY = (mouseY - delta_w / 2) / f2 / 2;
     console.log(newMouseX, newMouseY)
+    let hitboxes_copy = hitboxes.slice()
+    hitboxes_copy.push([camera_icon_pos, () => {
+        screen();
+    }]);
     if (!menu_open) {
-        for (i of hitboxes) {
+        for (i of hitboxes_copy) {
             pos = i[0];
             let xValid = (newMouseX >= pos[0] - buttonWidth / 2 && newMouseX <= pos[0] + buttonWidth / 2);
             let yValid = (newMouseY >= pos[1] - buttonWidth / 2 && newMouseY <= pos[1] + buttonWidth / 2);
