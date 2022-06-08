@@ -3,6 +3,8 @@ Number.prototype.mod = function(n) {
     return ((this % n) + n) % n;
 };
 
+var pressedKeys = {};
+
 function getFittedObjSizeInfo(obj) {
     const obj_size = obj.getBoundingClientRect();
     const og_width = obj.width
@@ -30,7 +32,7 @@ function getFittedObjSizeInfo(obj) {
     return [f1, f2, delta_h, delta_w]
 }
 
-let scene = 1;
+let scene = 0;
 
 
 //VARIABLES DU CREATEUR DE PERSONNAGE
@@ -56,17 +58,6 @@ let screen_cnt = 0;
 
 let dl_link = document.getElementById("blob_dl");
 
-//VARIABLES DE JEU
-
-camX = 0
-camY = 0
-playerX = 0
-playerY = 0
-
-playerRot = 0
-
-groundY = 0
-
 //CODE DE L'APPLI
 //prendre une capture et ouvrir le menu capture
 function screen() {
@@ -77,9 +68,16 @@ function screen() {
 
 function preload() {
     //prechargement des textures depuis github
-    spriteImg = loadImage('https://raw.githubusercontent.com/FuriousBird/furiousbird.github.io/main/game/sprites.png');
-    spriteMap = loadJSON("https://raw.githubusercontent.com/FuriousBird/furiousbird.github.io/main/game/sprite.map.json");
-    soundTrack = createAudio('https://raw.githubusercontent.com/FuriousBird/furiousbird.github.io/main/game/sound.mp3');
+    if (["localhost", "127.0.0.1"].includes(document.location.hostname)) {
+        spriteImg = loadImage('game/sprites.png');
+        spriteMap = loadJSON("game/sprite.map.json");
+        soundTrack = createAudio('game/sound.mp3');
+    } else {
+        spriteImg = loadImage('https://raw.githubusercontent.com/FuriousBird/furiousbird.github.io/main/game/sprites.png');
+        spriteMap = loadJSON("https://raw.githubusercontent.com/FuriousBird/furiousbird.github.io/main/game/sprite.map.json");
+        soundTrack = createAudio('https://raw.githubusercontent.com/FuriousBird/furiousbird.github.io/main/game/sound.mp3');
+    }
+
 }
 
 //une fois l'appli prête
@@ -107,10 +105,27 @@ function setup() {
         spriteMap.glassHat
     ];
     eyes = [spriteMap.eyeDefaultMedium, spriteMap.eyeSeriousMedium, spriteMap.eyeWhiteMedium];
+    mapData = [
+
+        [spriteMap.bush, 250, -60, 512, 1.02],
+        [spriteMap.pillar, 200, -60, 227, 1.04],
+        [spriteMap.bush, 200, -30, 200, 1.06],
+        [spriteMap.pillar, 600, -120, 180, 1.01],
+        [spriteMap.bush, 800, -60, 400, 1.03],
+        [spriteMap.pillar, 900, -30, 250, 1.06],
+        [spriteMap.rock, 850, -45, 350, 1.08],
+        [spriteMap.david, 500, -60, 200, 1.05],
+        [spriteMap.picture_1, 480, -300, 80, 1.05],
+        [spriteMap.bush, 500, -30, 300, 1.08],
+        [spriteMap.picture_1, 900, -180, 100, 1.08]
+
+
+    ]
     myCanvas = createCanvas(1080, 720);
     myCanvas.elt.style = "";
     document.addEventListener("click", handleMouse)
     console.log(soundTrack);
+    prevTime = new Date()
 }
 
 //preview de sprite avec points de debugging & accessoires de perso
@@ -164,6 +179,9 @@ function arrayEquals(a, b) {
 }
 
 function changeScene(x) {
+    if (x == 1) {
+        previousBuild = [NaN, NaN, NaN]
+    }
     hitboxes = []
     scene = x
 }
@@ -288,15 +306,25 @@ function handleMenu() {
             document.getElementById("dl_popup").className = "";
         });
     }
-
     if (!menu_open) {
-        let cam_pos = [pos[0], pos[1] + 50];
-        draw_sprite(spriteMap.crownHat, cam_pos, 50);
+        let _ = [pos[0], pos[1] + 50];
+        draw_sprite(spriteMap.crownHat, _, 50);
         textAlign(CENTER, TOP);
         textSize(20);
-        text("photo", cam_pos[0], cam_pos[1] + 20)
+        text("photo", _[0], _[1] + 20)
         if (isnewbuild) {
-            hitboxes.push([cam_pos, () => {
+            hitboxes.push([_, () => {
+                changeScene(0);
+            }]);
+        }
+
+    }
+
+    if (!menu_open) {
+        let camera_icon_pos = [width - 50, 50]
+        draw_sprite(spriteMap.crownHat, camera_icon_pos, 60);
+        if (isnewbuild) {
+            hitboxes.push([camera_icon_pos, () => {
                 screen();
             }]);
         }
@@ -305,14 +333,82 @@ function handleMenu() {
 
 }
 
+//VARIABLES DE JEU
+
+let m = 70;
+let g = 9.81;
+let player_vel = [0, -250];
+let player_pos = [700, 0];
+let cam_pos = [0, 0]
+let player_rot = 0;
+
+let max_hor_vel = 350;
+let player_accel = 40;
+let midair = false;
+
+let mapData;
+
 function handleGame() {
-    clear()
+    if ((pressedKeys[" "] || pressedKeys.z) && !midair) {
+        player_vel[1] = -400;
+        midair = true;
+    } else if (pressedKeys.q || pressedKeys.arrowleft || pressedKeys.d || pressedKeys.arrowright) {
+        if (pressedKeys.q || pressedKeys.arrowleft) {
+            player_vel[0] -= player_accel;
+        }
+        if (pressedKeys.d || pressedKeys.arrowright) {
+            player_vel[0] += player_accel;
+        }
+    } else if (!midair) {
+        player_vel[0] /= 1.2;
+        player_rot /= 2;
+    }
+
+    player_vel[0] = Math.min(Math.max(player_vel[0], -max_hor_vel), max_hor_vel);
+
+    player_rot = -player_vel[0] / max_hor_vel * 10
+
+    player_vel[1] += m * g * deltaTime;
+    background(255, 204, 0);
     let charSprite = chars[characterBuild[0].mod(chars.length)];
-    draw_sprite(charSprite.img, [200, 200], 100);
+    player_pos[0] += player_vel[0] * deltaTime;
+    let calculated_player_pos_y = player_pos[1] + player_vel[1] * deltaTime
+    let new_player_pos_y = Math.min(calculated_player_pos_y, 0);
+    let error = calculated_player_pos_y - new_player_pos_y;
+    if (error) {
+        midair = false;
+        //patch simple pour éviter de sauter trop haut quand on quitte la fenetre
+        player_vel[1] = 0;
+
+    }
+
+    player_pos[1] = new_player_pos_y;
+    cam_pos[0] += (player_pos[0] - cam_pos[0]) * 0.03
+    cam_pos[1] += (player_pos[1] - cam_pos[1]) * 0.05
+        //draw the map
+    for (let index = 0; index < mapData.length; index++) {
+        const element = mapData[index];
+        draw_sprite(element[0], [(element[1] + width / 2 - cam_pos[0]) * element[4], (element[2] + height / 2 + 100 - cam_pos[1]) * element[4]], element[3])
+    }
+    //draw the player
+    let playerDisplayPos = [player_pos[0] + width / 2 - cam_pos[0], player_pos[1] + height / 2 + 100 - cam_pos[1]];
+    translate(playerDisplayPos[0], playerDisplayPos[1]);
+    if (player_vel[0] > 0) {
+        scale(-1, 1);
+    }
+    rotate(PI / 180 * Math.abs(player_rot));
+    draw_sprite(charSprite, [0, 0], 100);
+    resetMatrix();
 }
 
-//la boucle d'affichage
+//variables de temps
+let prevTime;
+let deltaTime;
+
 function draw() {
+    let newTime = new Date();
+    deltaTime = (newTime - prevTime) / 1000;
+    prevTime = newTime;
     //on efface tout
     clear();
     background(255, 204, 0);
@@ -398,3 +494,6 @@ document.addEventListener('visibilitychange', e => {
 
     }
 });
+
+window.onkeyup = function(e) { pressedKeys[e.key.toLowerCase()] = false; }
+window.onkeydown = function(e) { pressedKeys[e.key.toLowerCase()] = true; }

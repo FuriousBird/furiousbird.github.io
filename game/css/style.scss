@@ -26,17 +26,17 @@ main {
     width: 100%;
     height: 100%;
     canvas {
-        display:block;
+        display: block;
         height: 100%;
         width: 100%;
         object-fit: contain;
-        image-rendering: pixelated;
-        height:initial;
+        image-rendering: optimizeQuality;
+        height: initial;
         //left: 50%;
         //top: 50%;
         //transform: translate(-50%, -50%);
         //meme couleur que arriere plan pour eviter flash lors de capture de l'image
-        background-color: #dcdcdc;
+        background-color: rgb(24, 24, 24);
     }
 }
 

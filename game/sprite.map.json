@@ -305,5 +305,110 @@
             60,
             40
         ]
+    },
+    "pillar": {
+        "desc": "standart pillar",
+        "pos": [
+            2024,
+            788
+        ],
+        "size": [
+            227,
+            942
+        ],
+        "origin": [
+            113,
+            942
+        ]
+    },
+    "bush": {
+        "desc": "simple bush",
+        "pos": [
+            1739,
+            259
+        ],
+        "size": [
+            525,
+            519
+        ],
+        "origin": [
+            262,
+            519
+        ]
+    },
+    "picture_3": {
+        "desc": "third picture",
+        "pos": [
+            800,
+            1600
+        ],
+        "size": [
+            400,
+            400
+        ],
+        "origin": [
+            200,
+            200
+        ]
+    },
+    "picture_2": {
+        "desc": "second picture",
+        "pos": [
+            400,
+            1600
+        ],
+        "size": [
+            400,
+            400
+        ],
+        "origin": [
+            200,
+            200
+        ]
+    },
+    "picture_1": {
+        "desc": "first picture",
+        "pos": [
+            0,
+            1600
+        ],
+        "size": [
+            400,
+            400
+        ],
+        "origin": [
+            200,
+            200
+        ]
+    },
+    "rock": {
+        "desc": "cool rock",
+        "pos": [
+            1207,
+            1481
+        ],
+        "size": [
+            400,
+            323
+        ],
+        "origin": [
+            200,
+            323
+        ]
+    },
+    "david": {
+        "desc": "cool statue",
+        "pos": [
+            1722,
+            789
+        ],
+        "size": [
+            274,
+            643
+        ],
+        "origin": [
+            137,
+            643
+        ]
     }
 }
