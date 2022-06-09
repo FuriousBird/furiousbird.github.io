@@ -104,28 +104,36 @@ function setup() {
         spriteMap.glassHat
     ];
     eyes = [spriteMap.eyeDefaultMedium, spriteMap.eyeSeriousMedium, spriteMap.eyeWhiteMedium];
-    mapData = [
-        [spriteMap.bush, 250, -60, 512, 1.02],
-        [spriteMap.pillar, 200, -60, 227, 1.04],
-        [spriteMap.bush, 200, -30, 200, 1.06],
-        [spriteMap.pillar, 600, -120, 180, 1.01],
-        [spriteMap.bush, 800, -60, 400, 1.03],
-        [spriteMap.pillar, 900, -60, 250, 1.06],
-        [spriteMap.rock, 850, -45, 350, 1.08],
-        [spriteMap.david, 500, -60, 200, 1.05],
-        [spriteMap.picture_1, 480, -300, 80, 1.06],
-        [spriteMap.bush, 500, -30, 300, 1.08], //here ends the first area
-        [spriteMap.bush, 1650, -100, 256, 1.01],
-        [spriteMap.shroom, 1500, -150, 300, 1.02],
-        [spriteMap.picture_3, 1400, -300, 100, 1.03],
-        [spriteMap.bush, 1400, -60, 256, 1.04],
-        [spriteMap.rock2, 1500, -60, 256, 1.05],
-        [spriteMap.picture_3, 1700, -350, 100, 1.05],
-        [spriteMap.shroom, 1600, -100, 200, 1.06],
-        [spriteMap.bush, 1700, -60, 256, 1.07],
-        [spriteMap.moss, 1400, -30, 227, 1.07],
-        [spriteMap.rock, 1550, -30, 227, 1.08],
-    ]
+    mapData = {
+        objects:[
+            [spriteMap.bush, 250, -60, 512, 1.02],
+            [spriteMap.pillar, 200, -60, 227, 1.04],
+            [spriteMap.bush, 200, -30, 200, 1.06],
+            [spriteMap.pillar, 600, -120, 180, 1.01],
+            [spriteMap.bush, 800, -60, 400, 1.03],
+            [spriteMap.pillar, 900, -60, 250, 1.06],
+            [spriteMap.rock, 850, -45, 350, 1.08],
+            [spriteMap.david, 500, -60, 200, 1.05],
+            [spriteMap.picture_1, 480, -300, 80, 1.06],
+            [spriteMap.bush, 500, -30, 300, 1.08], //here ends the first area
+            [spriteMap.bush, 1650, -100, 256, 1.01],
+            [spriteMap.shroom, 1500, -150, 400, 1.02],
+            [spriteMap.shroom, 1800, -100, 300, 1.02],
+            [spriteMap.picture_3, 1300, -400, 100, 1.03],
+            [spriteMap.bush, 1400, -60, 256, 1.04],
+            [spriteMap.rock2, 1500, -60, 300, 1.05],
+            [spriteMap.shroom, 1600, -100, 250, 1.06],
+            [spriteMap.bush, 1700, -60, 300, 1.07],
+            [spriteMap.moss, 1400, 0, 300, 1.07],
+            [spriteMap.rock, 1550, -30, 250, 1.08],
+        ],
+        platforms:[
+            [1550, -200, 200],
+            [1600, -430, 150],
+            [1800, -550, 150],
+            [1500, -730, 200]
+        ]
+    };
 
     myCanvas = createCanvas(1080, 720);
     myCanvas.elt.style = "";
@@ -309,18 +317,59 @@ function handleMenu() {
 
 //VARIABLES DE JEU
 
+function collidesWith(platform, prev_pos, delta_tmp){
+    let pT = platform[1];   // altitude de la plateforme
+    let dB = prev_pos;  //bas du joueur
+
+    //soit la valeur absolue de la distance joueur-plateforme > 0
+    //si le joueur monte, delta y est négatif et la 1re condition ne peut pas étre verifiée 
+    //si le joueur descend, delta y est positif et si il est supérieur à la distance entre joueur et palteforme il y a collision
+    //il suffit ensuite de vérifier que le joueur n'est pas passé à coté de la plateforme en tombant, avec la 2nde condition
+    let pLX = platform[0] - platform[2]/2 // position du coin gauche de la plateforme
+    let display_plat_pos = [(pLX - cam_pos[0]) * 1 + width / 2, (pT - cam_pos[1]) * 1 + height / 2 + 100];
+    // strokeWeight(4);
+    //line(display_plat_pos[0],display_plat_pos[1],display_plat_pos[0]+platform[2] ,display_plat_pos[1]);
+
+    if (Math.abs(pT - dB) <= delta_tmp && (pT >= dB)){
+        let pLX = platform[0] - platform[2]/2 // position du coin gauche de la plateforme
+        let pRX = (pLX + platform[2])  // position du coin droit de la plateforme // (positionx plateforme + largeur)
+        let dLX = player_pos[0]-playerW/2  // position du joueur a partir du coin gauche
+        let dRX = dLX + playerW  // position du coin droit dy joueur (pos x du  joueur + largeur)
+        // stroke(0, 204, 255);
+        
+        console.log(pLX,pRX);
+        console.log(dLX,dRX);
+        
+        if ((pRX >= dLX && dLX >= pLX ) || (pRX >= dRX && dRX >= pLX )){ // si les deux delta x sont confondus il y a bien collision
+            stroke(0, 204, 0);
+            return true
+        };
+    };
+    return false
+};
+
 let m = 70;
 let g = 9.81;
 let player_vel = [0, 0];
 let player_pos = [1600, 0];
 let cam_pos = [0, 0]
 let player_rot = 0;
+let playerW = 100;
 
 let max_hor_vel = 350;
 let player_accel = 40;
 let midair = false;
 
+
 let mapData;
+let defaultPlayerDepth = 1.1;
+let playerDepth = defaultPlayerDepth;
+
+function groundcollide(){
+    midair = false;
+
+    player_vel[1] = 0;
+}
 
 function handleGame() {
     if ((pressedKeys[" "] || pressedKeys.z || pressedKeys.arrowup) && !midair) {
@@ -340,37 +389,47 @@ function handleGame() {
 
     player_vel[0] = Math.min(Math.max(player_vel[0], -max_hor_vel), max_hor_vel);
 
-    player_rot = -player_vel[0] / max_hor_vel * 10
+    player_rot = -player_vel[0] / max_hor_vel * 10;
 
     player_vel[1] += m * g * deltaTime;
     background(255, 204, 0);
     let charSprite = chars[characterBuild[0].mod(chars.length)];
     player_pos[0] += player_vel[0] * deltaTime;
-    let calculated_player_pos_y = player_pos[1] + player_vel[1] * deltaTime
+    let deltaY = player_vel[1] * deltaTime;
+    let calculated_player_pos_y = player_pos[1] + deltaY;
     let new_player_pos_y = Math.min(calculated_player_pos_y, 0);
     let error = calculated_player_pos_y - new_player_pos_y;
-    if (error) {
-        midair = false;
-        //patch simple pour éviter de sauter trop haut quand on quitte la fenetre
-        player_vel[1] = 0;
-
+    if(error){
+        groundcollide();
     }
-
+    
+    for (let i = 0; i < mapData.platforms.length; i++) {
+        const element = mapData.platforms[i];
+        const iscollision = collidesWith(element, player_pos[1], new_player_pos_y-player_pos[1]);
+        if (iscollision){
+            new_player_pos_y = Math.min(calculated_player_pos_y, element[1]);
+            groundcollide();
+        };
+    };
+    
+    
+    
     player_pos[1] = new_player_pos_y;
+
+    let playerDisplayPos = [(player_pos[0] - cam_pos[0]) * playerDepth + width / 2, (player_pos[1] - cam_pos[1]) * playerDepth + height / 2 + 100];
     cam_pos[0] += (player_pos[0] - cam_pos[0]) * 0.03
     cam_pos[1] += (player_pos[1] - cam_pos[1]) * 0.05
+    
         //draw the map
-    for (let index = 0; index < mapData.length; index++) {
-        const element = mapData[index];
+    for (let index = 0; index < mapData.objects.length; index++) {
+        const element = mapData.objects[index];
         draw_sprite(element[0], [(element[1] - cam_pos[0]) * element[4] + width / 2, (element[2] - cam_pos[1]) * element[4] + height / 2 + 100], element[3])
     }
     //draw the player
-    let playerDisplayPos = [(player_pos[0] - cam_pos[0]) * 1.1 + width / 2, (player_pos[1] - cam_pos[1]) * 1.1 + height / 2 + 100];
     translate(playerDisplayPos[0], playerDisplayPos[1]);
     if (player_vel[0] > 0) {
         scale(-1, 1);
     }
-    let playerW = 100;
     rotate(PI / 180 * Math.abs(player_rot));
     draw_sprite(charSprite, [0, 0], playerW);
     let eyeSprite = eyes[characterBuild[1].mod(eyes.length)];
@@ -428,26 +487,26 @@ function draw() {
             dl_link.download = "character.png";
             document.getElementById("dl_popup").className = "";
         });
-    }
+    };
 
     if (!menu_open) {
         draw_sprite(spriteMap.camera, camera_icon_pos, 60);
-    }
+    };
 }
 
 function handleMouse(e) {
     //ne pas toucher: une soirée de travail je sais même pas pk... (a réécrire proprement)
     var rect = myCanvas.elt.getBoundingClientRect();
-    var mouseX = e.clientX - rect.left; //x position within the element.
-    var mouseY = e.clientY - rect.top; //y position within the element.
+    var clickX = e.clientX - rect.left; //x position within the element.
+    var clickY = e.clientY - rect.top; //y position within the element.
     let sizeInfo = getFittedObjSizeInfo(myCanvas.elt);
     let f1 = sizeInfo[0];
     let f2 = sizeInfo[1];
     let delta_w = sizeInfo[2];
     let delta_h = sizeInfo[3];
-    let newMouseX = (mouseX - delta_h / 2) / f1 / 2;
-    let newMouseY = (mouseY - delta_w / 2) / f2 / 2;
-    console.log(newMouseX, newMouseY)
+    let newMouseX = (clickX - delta_h/2) / f1;
+    let newMouseY = (clickY - delta_w/2) / f2;
+    console.log(newMouseX, newMouseY);
     let hitboxes_copy = hitboxes.slice()
     hitboxes_copy.push([camera_icon_pos, () => {
         screen();
@@ -481,7 +540,7 @@ let dl_popup = document.getElementById("dl_popup");
 let popup_quit = document.getElementById("quit");
 dl_popup.addEventListener("click", (e) => {
     //si l'element sélectionné n'est ni le bouton quitter, ni l'exterieur de la popup
-    if (e.target !== dl_popup &&  e.target !== popup_quit) {
+    if (e.target !== dl_popup && e.target !== popup_quit) {
         return; //on quitte la fonction
     }
     //sinon si le menu est ouvert:
