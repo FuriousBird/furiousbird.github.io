@@ -105,7 +105,7 @@ function setup() {
     ];
     eyes = [spriteMap.eyeDefaultMedium, spriteMap.eyeSeriousMedium, spriteMap.eyeWhiteMedium];
     mapData = {
-        objects:[
+        objects: [
             [spriteMap.bush, 250, -60, 512, 1.02],
             [spriteMap.pillar, 200, -60, 227, 1.04],
             [spriteMap.bush, 200, -30, 200, 1.06],
@@ -127,7 +127,7 @@ function setup() {
             [spriteMap.moss, 1400, 0, 300, 1.07],
             [spriteMap.rock, 1550, -30, 250, 1.08],
         ],
-        platforms:[
+        platforms: [
             [1550, -200, 200],
             [1600, -430, 150],
             [1800, -550, 150],
@@ -135,6 +135,7 @@ function setup() {
         ]
     };
 
+    pixelDensity(1);
     myCanvas = createCanvas(1080, 720);
     myCanvas.elt.style = "";
     document.addEventListener("click", handleMouse)
@@ -300,19 +301,19 @@ function handleMenu() {
     }
 
     if (!menu_open) {
-        let _ = [pos[0]+10, pos[1] + 50];
+        let _ = [pos[0] + 10, pos[1] + 50];
         let buttonImg = spriteMap.play_button;
         let buttonWidth = 120;
         draw_sprite(buttonImg, _, 120);
-        let r = buttonImg.size[1]/buttonImg.size[0];
+        let r = buttonImg.size[1] / buttonImg.size[0];
         if (isnewbuild) {
             hitboxes.push(
                 [
-                    _, 
+                    _,
                     () => {
                         changeScene(0);
                     },
-                    [buttonWidth, Math.trunc(buttonWidth*r)]
+                    [buttonWidth, Math.trunc(buttonWidth * r)]
                 ]
             );
         }
@@ -323,30 +324,30 @@ function handleMenu() {
 
 //VARIABLES DE JEU
 
-function collidesWith(platform, prev_pos, delta_tmp){
-    let pT = platform[1];   // altitude de la plateforme
-    let dB = prev_pos;  //bas du joueur
+function collidesWith(platform, prev_pos, delta_tmp) {
+    let pT = platform[1]; // altitude de la plateforme
+    let dB = prev_pos; //bas du joueur
 
     //soit la valeur absolue de la distance joueur-plateforme > 0
     //si le joueur monte, delta y est négatif et la 1re condition ne peut pas étre verifiée 
     //si le joueur descend, delta y est positif et si il est supérieur à la distance entre joueur et palteforme il y a collision
     //il suffit ensuite de vérifier que le joueur n'est pas passé à coté de la plateforme en tombant, avec la 2nde condition
-    let pLX = platform[0] - platform[2]/2 // position du coin gauche de la plateforme
+    let pLX = platform[0] - platform[2] / 2 // position du coin gauche de la plateforme
     let display_plat_pos = [(pLX - cam_pos[0]) * 1 + width / 2, (pT - cam_pos[1]) * 1 + height / 2 + 100];
     // strokeWeight(4);
     //line(display_plat_pos[0],display_plat_pos[1],display_plat_pos[0]+platform[2] ,display_plat_pos[1]);
 
-    if (Math.abs(pT - dB) <= delta_tmp && (pT >= dB)){
-        let pLX = platform[0] - platform[2]/2 // position du coin gauche de la plateforme
-        let pRX = (pLX + platform[2])  // position du coin droit de la plateforme // (positionx plateforme + largeur)
-        let dLX = player_pos[0]-playerW/2  // position du joueur a partir du coin gauche
-        let dRX = dLX + playerW  // position du coin droit dy joueur (pos x du  joueur + largeur)
-        // stroke(0, 204, 255);
-        
-        console.log(pLX,pRX);
-        console.log(dLX,dRX);
-        
-        if ((pRX >= dLX && dLX >= pLX ) || (pRX >= dRX && dRX >= pLX )){ // si les deux delta x sont confondus il y a bien collision
+    if (Math.abs(pT - dB) <= delta_tmp && (pT >= dB)) {
+        let pLX = platform[0] - platform[2] / 2 // position du coin gauche de la plateforme
+        let pRX = (pLX + platform[2]) // position du coin droit de la plateforme // (positionx plateforme + largeur)
+        let dLX = player_pos[0] - playerW / 2 // position du joueur a partir du coin gauche
+        let dRX = dLX + playerW // position du coin droit dy joueur (pos x du  joueur + largeur)
+            // stroke(0, 204, 255);
+
+        console.log(pLX, pRX);
+        console.log(dLX, dRX);
+
+        if ((pRX >= dLX && dLX >= pLX) || (pRX >= dRX && dRX >= pLX)) { // si les deux delta x sont confondus il y a bien collision
             stroke(0, 204, 0);
             return true
         };
@@ -371,7 +372,7 @@ let mapData;
 let defaultPlayerDepth = 1.1;
 let playerDepth = defaultPlayerDepth;
 
-function groundcollide(){
+function groundcollide() {
     midair = false;
 
     player_vel[1] = 0;
@@ -405,28 +406,28 @@ function handleGame() {
     let calculated_player_pos_y = player_pos[1] + deltaY;
     let new_player_pos_y = Math.min(calculated_player_pos_y, 0);
     let error = calculated_player_pos_y - new_player_pos_y;
-    if(error){
+    if (error) {
         groundcollide();
     }
-    
+
     for (let i = 0; i < mapData.platforms.length; i++) {
         const element = mapData.platforms[i];
-        const iscollision = collidesWith(element, player_pos[1], new_player_pos_y-player_pos[1]);
-        if (iscollision){
+        const iscollision = collidesWith(element, player_pos[1], new_player_pos_y - player_pos[1]);
+        if (iscollision) {
             new_player_pos_y = Math.min(calculated_player_pos_y, element[1]);
             groundcollide();
         };
     };
-    
-    
-    
+
+
+
     player_pos[1] = new_player_pos_y;
 
     let playerDisplayPos = [(player_pos[0] - cam_pos[0]) * playerDepth + width / 2, (player_pos[1] - cam_pos[1]) * playerDepth + height / 2 + 100];
     cam_pos[0] += (player_pos[0] - cam_pos[0]) * 0.03
     cam_pos[1] += (player_pos[1] - cam_pos[1]) * 0.05
-    
-        //draw the map
+
+    //draw the map
     for (let index = 0; index < mapData.objects.length; index++) {
         const element = mapData.objects[index];
         draw_sprite(element[0], [(element[1] - cam_pos[0]) * element[4] + width / 2, (element[2] - cam_pos[1]) * element[4] + height / 2 + 100], element[3])
@@ -510,8 +511,8 @@ function handleMouse(e) {
     let f2 = sizeInfo[1];
     let delta_w = sizeInfo[2];
     let delta_h = sizeInfo[3];
-    let newMouseX = (clickX - delta_h/2) / f1;
-    let newMouseY = (clickY - delta_w/2) / f2;
+    let newMouseX = (clickX - delta_h / 2) / f1;
+    let newMouseY = (clickY - delta_w / 2) / f2;
     console.log(newMouseX, newMouseY);
     let hitboxes_copy = hitboxes.slice()
     hitboxes_copy.push([camera_icon_pos, () => {
@@ -520,7 +521,7 @@ function handleMouse(e) {
     if (!menu_open) {
         for (i of hitboxes_copy) {
             pos = i[0];
-            let hitbox_size =  i[2] || [];
+            let hitbox_size = i[2] || [];
             let hitbox_width = hitbox_size[0] || buttonWidth;
             let hitbox_height = hitbox_size[1] || buttonWidth;
 
