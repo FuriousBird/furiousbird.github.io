@@ -1,4 +1,19 @@
 {
+    "play_button": {
+        "desc": "button to start playing",
+        "pos": [
+            1136,
+            1301
+        ],
+        "size": [
+            468,
+            128
+        ],
+        "origin": [
+            234,
+            64
+        ]
+    },
     "bob": {
         "desc": "circle boi",
         "pos": [

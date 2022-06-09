@@ -300,15 +300,21 @@ function handleMenu() {
     }
 
     if (!menu_open) {
-        let _ = [pos[0], pos[1] + 50];
-        draw_sprite(spriteMap.crownHat, _, 50);
-        textAlign(CENTER, TOP);
-        textSize(20);
-        text("photo", _[0], _[1] + 20)
+        let _ = [pos[0]+10, pos[1] + 50];
+        let buttonImg = spriteMap.play_button;
+        let buttonWidth = 120;
+        draw_sprite(buttonImg, _, 120);
+        let r = buttonImg.size[1]/buttonImg.size[0];
         if (isnewbuild) {
-            hitboxes.push([_, () => {
-                changeScene(0);
-            }]);
+            hitboxes.push(
+                [
+                    _, 
+                    () => {
+                        changeScene(0);
+                    },
+                    [buttonWidth, Math.trunc(buttonWidth*r)]
+                ]
+            );
         }
 
     }
@@ -514,8 +520,12 @@ function handleMouse(e) {
     if (!menu_open) {
         for (i of hitboxes_copy) {
             pos = i[0];
-            let xValid = (newMouseX >= pos[0] - buttonWidth / 2 && newMouseX <= pos[0] + buttonWidth / 2);
-            let yValid = (newMouseY >= pos[1] - buttonWidth / 2 && newMouseY <= pos[1] + buttonWidth / 2);
+            let hitbox_size =  i[2] || [];
+            let hitbox_width = hitbox_size[0] || buttonWidth;
+            let hitbox_height = hitbox_size[1] || buttonWidth;
+
+            let xValid = (newMouseX >= pos[0] - hitbox_width / 2 && newMouseX <= pos[0] + hitbox_width / 2);
+            let yValid = (newMouseY >= pos[1] - hitbox_height / 2 && newMouseY <= pos[1] + hitbox_height / 2);
             if (xValid && yValid) {
                 i[1]();
                 break;
