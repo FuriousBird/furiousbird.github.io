@@ -16,16 +16,13 @@ function getFittedObjSizeInfo(obj) {
     if (new_ratio > og_ratio) {
         var display_w = w;
         var display_h = og_ratio * w;
-        console.log("e");
     } else {
         var display_h = h;
         var display_w = (1 / og_ratio) * h;
-        console.log("b");
     };
 
     let f1 = display_w / og_width
     let f2 = display_h / og_height
-    console.log(f1, f2);
 
     let delta_h = h - display_h
     let delta_w = w - display_w
@@ -119,7 +116,6 @@ function setup() {
             [spriteMap.bush, 1650, -100, 256, 1.01],
             [spriteMap.shroom, 1500, -150, 400, 1.02],
             [spriteMap.shroom, 1800, -100, 300, 1.02],
-            [spriteMap.picture_3, 1300, -400, 100, 1.03],
             [spriteMap.bush, 1400, -60, 256, 1.04],
             [spriteMap.rock2, 1500, -60, 300, 1.05],
             [spriteMap.shroom, 1600, -100, 250, 1.06],
@@ -132,9 +128,14 @@ function setup() {
             [1600, -430, 150],
             [1800, -550, 150],
             [1500, -730, 200]
+        ],
+        coins: [
+            [1550, -260, 1.08],
+            [1600, -500, 1.06],
+            [1800, -600, 1.03],
+            [1500, -810, 1.02]
         ]
     };
-
     pixelDensity(1);
     myCanvas = createCanvas(1080, 720);
     myCanvas.elt.style = "";
@@ -184,6 +185,7 @@ function draw_sprite(sprite, pos, w) {
     let og_y = sprite.origin[1] || 0;
     let k = w / og_w;
     image(sprite.img, pos[0] - og_x * k, pos[1] - og_y * k, w, k * og_h);
+    sprite = null
 }
 
 //code comparaison de listes sur internet
@@ -344,9 +346,6 @@ function collidesWith(platform, prev_pos, delta_tmp) {
         let dRX = dLX + playerW // position du coin droit dy joueur (pos x du  joueur + largeur)
             // stroke(0, 204, 255);
 
-        console.log(pLX, pRX);
-        console.log(dLX, dRX);
-
         if ((pRX >= dLX && dLX >= pLX) || (pRX >= dRX && dRX >= pLX)) { // si les deux delta x sont confondus il y a bien collision
             stroke(0, 204, 0);
             return true
@@ -354,6 +353,8 @@ function collidesWith(platform, prev_pos, delta_tmp) {
     };
     return false
 };
+
+const general_offset_y = 100;
 
 let m = 70;
 let g = 9.81;
@@ -371,6 +372,9 @@ let midair = false;
 let mapData;
 let defaultPlayerDepth = 1.1;
 let playerDepth = defaultPlayerDepth;
+
+let coin_size = 60;
+let coin_delta_y = 20;
 
 function groundcollide() {
     midair = false;
@@ -423,15 +427,30 @@ function handleGame() {
 
     player_pos[1] = new_player_pos_y;
 
-    let playerDisplayPos = [(player_pos[0] - cam_pos[0]) * playerDepth + width / 2, (player_pos[1] - cam_pos[1]) * playerDepth + height / 2 + 100];
+    let playerDisplayPos = [(player_pos[0] - cam_pos[0]) * playerDepth + width / 2, (player_pos[1] - cam_pos[1]) * playerDepth + height / 2 + general_offset_y];
     cam_pos[0] += (player_pos[0] - cam_pos[0]) * 0.03
     cam_pos[1] += (player_pos[1] - cam_pos[1]) * 0.05
 
     //draw the map
     for (let index = 0; index < mapData.objects.length; index++) {
         const element = mapData.objects[index];
-        draw_sprite(element[0], [(element[1] - cam_pos[0]) * element[4] + width / 2, (element[2] - cam_pos[1]) * element[4] + height / 2 + 100], element[3])
+        draw_sprite(element[0], [(element[1] - cam_pos[0]) * element[4] + width / 2, (element[2] - cam_pos[1]) * element[4] + height / 2 + general_offset_y], element[3])
     }
+
+    //draw the coins
+    for (let index = 0; index < mapData.coins.length; index++) {
+        const element = mapData.coins[index];
+        if (element !== null) {
+            let dist_to_player = Math.sqrt((player_pos[0] - element[0]) ** 2 + (player_pos[1] - element[1]) ** 2);
+            if (dist_to_player < 60) {
+                mapData.coins[index] = null;
+            } else {
+                let coin_offset_y = coin_delta_y * (Math.sin(millis() / 700 + index * 20) + 1) / 2;
+                draw_sprite(spriteMap.coin, [(element[0] - cam_pos[0]) * element[2] + width / 2, (element[1] - cam_pos[1] + coin_offset_y) * element[2] + height / 2 + general_offset_y], coin_size);
+            }
+        }
+    }
+
     //draw the player
     translate(playerDisplayPos[0], playerDisplayPos[1]);
     if (player_vel[0] > 0) {
@@ -454,6 +473,10 @@ let prevTime;
 let deltaTime;
 
 function draw() {
+    if (performance.memory) {
+        console.log(performance.memory.usedJSHeapSize);
+    }
+
     let newTime = new Date();
     deltaTime = (newTime - prevTime) / 1000;
     prevTime = newTime;
@@ -533,6 +556,7 @@ function handleMouse(e) {
             }
         }
     }
+
     //on lance la musique lors du 1er clic pour ne pas demander de permissions au navigateur
     if (!soundplaying) {
         soundTrack.elt.loop = true;
