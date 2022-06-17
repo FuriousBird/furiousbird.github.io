@@ -101,41 +101,103 @@ function setup() {
         spriteMap.glassHat
     ];
     eyes = [spriteMap.eyeDefaultMedium, spriteMap.eyeSeriousMedium, spriteMap.eyeWhiteMedium];
-    mapData = {
-        objects: [
-            [spriteMap.bush, 250, -60, 512, 1.02],
-            [spriteMap.pillar, 200, -60, 227, 1.04],
-            [spriteMap.bush, 200, -30, 200, 1.06],
-            [spriteMap.pillar, 600, -120, 180, 1.01],
-            [spriteMap.bush, 800, -60, 400, 1.03],
-            [spriteMap.pillar, 900, -60, 250, 1.06],
-            [spriteMap.rock, 850, -45, 350, 1.08],
-            [spriteMap.david, 500, -60, 200, 1.05],
-            [spriteMap.picture_1, 480, -300, 80, 1.06],
-            [spriteMap.bush, 500, -30, 300, 1.08], //here ends the first area
-            [spriteMap.bush, 1650, -100, 256, 1.01],
-            [spriteMap.shroom, 1500, -150, 400, 1.02],
-            [spriteMap.shroom, 1800, -100, 300, 1.02],
-            [spriteMap.bush, 1400, -60, 256, 1.04],
-            [spriteMap.rock2, 1500, -60, 300, 1.05],
-            [spriteMap.shroom, 1600, -100, 250, 1.06],
-            [spriteMap.bush, 1700, -60, 300, 1.07],
-            [spriteMap.moss, 1400, 0, 300, 1.07],
-            [spriteMap.rock, 1550, -30, 250, 1.08],
-        ],
-        platforms: [
-            [1550, -200, 200],
-            [1600, -430, 150],
-            [1800, -550, 150],
-            [1500, -730, 200]
-        ],
-        coins: [
-            [1550, -260, 1.08],
-            [1600, -500, 1.06],
-            [1800, -600, 1.03],
-            [1500, -810, 1.02]
-        ]
-    };
+    maps = [{
+            area: [-200, 2300, 0],
+            objects: {
+                back: [
+                    [spriteMap.bush, 250, -60, 512, 1.02],
+                    [spriteMap.pillar, 200, -60, 227, 1.04],
+                    [spriteMap.bush, 200, -30, 200, 1.06],
+                    [spriteMap.pillar, 600, -120, 180, 1.01],
+                    [spriteMap.bush, 800, -60, 400, 1.03],
+                    [spriteMap.pillar, 900, -60, 250, 1.06],
+                    [spriteMap.rock, 850, -45, 350, 1.08],
+                    [spriteMap.david, 500, -60, 200, 1.05],
+                    [spriteMap.picture_1, 480, -300, 80, 1.06],
+                    [spriteMap.bush, 500, -30, 300, 1.08], //here ends the first area
+                    [spriteMap.bush, 1650, -100, 256, 1.01],
+                    [spriteMap.shroom, 1500, -150, 400, 1.02],
+                    [spriteMap.shroom, 1800, -100, 300, 1.02],
+                    [spriteMap.bush, 1400, -60, 256, 1.04],
+                    [spriteMap.rock2, 1500, -60, 300, 1.05],
+                    [spriteMap.shroom, 1600, -100, 250, 1.06],
+                    [spriteMap.bush, 1700, -60, 300, 1.07],
+                    [spriteMap.moss, 1400, 0, 300, 1.07],
+                    [spriteMap.rock, 1550, -30, 250, 1.08]
+                ],
+                front: [
+                    [spriteMap.shroom, 1000, 250, 720, 2.5],
+                    [spriteMap.bush, 1600, 300, 720, 2]
+                ]
+            },
+            platforms: [
+                [1550, -200, 200],
+                [1600, -430, 150],
+                [1800, -550, 150],
+                [1500, -730, 200]
+            ],
+            coins: [
+                [1550, -260, 1.08],
+                [1600, -500, 1.06],
+                [1800, -600, 1.03],
+                [1500, -810, 1.02]
+            ],
+            options: {
+                camfollow: true
+            },
+            exit: {
+                exitpoint: [
+                    2300, -200
+                ],
+                exitindex: 1
+            }
+        },
+        {
+            area: [-200, 2000, 0],
+            objects: {
+                back: [
+                    [spriteMap.bush, 250, -60, 512, 1.02],
+                    [spriteMap.pillar, 200, -60, 227, 1.04],
+                    [spriteMap.bush, 200, -30, 200, 1.06],
+                    [spriteMap.pillar, 600, -120, 180, 1.01],
+                    [spriteMap.bush, 800, -60, 400, 1.03],
+                    [spriteMap.pillar, 900, -60, 250, 1.06],
+                    [spriteMap.rock, 850, -45, 350, 1.08],
+                    [spriteMap.david, 500, -60, 200, 1.05],
+                    [spriteMap.picture_1, 480, -300, 80, 1.06],
+                    [spriteMap.bush, 500, -30, 300, 1.08], //here ends the first area
+                    [spriteMap.bush, 1650, -100, 256, 1.01],
+                    [spriteMap.shroom, 1500, -150, 400, 1.02],
+                    [spriteMap.shroom, 1800, -100, 300, 1.02],
+                    [spriteMap.bush, 1400, -60, 256, 1.04],
+                    [spriteMap.rock2, 1500, -60, 300, 1.05],
+                    [spriteMap.shroom, 1600, -100, 250, 1.06],
+                    [spriteMap.bush, 1700, -60, 300, 1.07],
+                    [spriteMap.moss, 1400, 0, 300, 1.07],
+                    [spriteMap.rock, 1550, -30, 250, 1.08],
+                ],
+                front: [
+                    [spriteMap.pillar, 1600, 400, 720, 2],
+                ]
+            },
+            platforms: [
+                [1550, -200, 200],
+                [1600, -430, 150],
+                [1800, -550, 150],
+                [1500, -730, 200]
+            ],
+            coins: [
+                [1550, -260, 1.08],
+                [1600, -500, 1.06],
+                [1800, -600, 1.03],
+                [1500, -810, 1.02]
+            ],
+            options: {
+                campos: [0, 0],
+                camfollow: false
+            }
+        }
+    ];
     pixelDensity(1);
     myCanvas = createCanvas(1080, 720);
     myCanvas.elt.style = "";
@@ -369,12 +431,22 @@ let player_accel = 40;
 let midair = false;
 
 
-let mapData;
-let defaultPlayerDepth = 1.1;
+let maps;
+let defaultPlayerDepth = 1;
 let playerDepth = defaultPlayerDepth;
 
 let coin_size = 60;
 let coin_delta_y = 20;
+
+let exit_radius = 300;
+let add_radius = 20;
+
+let exit_particles;
+let exit_particle_count = 30;
+let particle_life = 1;
+let particle_life_rnd = 5;
+let particle_speed = 200;
+let particle_size = 20;
 
 function groundcollide() {
     midair = false;
@@ -382,58 +454,15 @@ function groundcollide() {
     player_vel[1] = 0;
 }
 
-function handleGame() {
-    if ((pressedKeys[" "] || pressedKeys.z || pressedKeys.arrowup) && !midair) {
-        player_vel[1] = -600;
-        midair = true;
-    } else if (pressedKeys.q || pressedKeys.arrowleft || pressedKeys.d || pressedKeys.arrowright) {
-        if (pressedKeys.q || pressedKeys.arrowleft) {
-            player_vel[0] -= player_accel;
-        }
-        if (pressedKeys.d || pressedKeys.arrowright) {
-            player_vel[0] += player_accel;
-        }
-    } else if (!midair) {
-        player_vel[0] /= 1.2;
-        player_rot /= 2;
-    }
+function getExitParticle(origin) {
+    //x,y,angle, life
+    return [origin[0], origin[1], Math.random() * Math.PI * 2, particle_life + Math.random() * particle_life_rnd]
+}
 
-    player_vel[0] = Math.min(Math.max(player_vel[0], -max_hor_vel), max_hor_vel);
-
-    player_rot = -player_vel[0] / max_hor_vel * 10;
-
-    player_vel[1] += m * g * deltaTime;
-    background(255, 204, 0);
-    let charSprite = chars[characterBuild[0].mod(chars.length)];
-    player_pos[0] += player_vel[0] * deltaTime;
-    let deltaY = player_vel[1] * deltaTime;
-    let calculated_player_pos_y = player_pos[1] + deltaY;
-    let new_player_pos_y = Math.min(calculated_player_pos_y, 0);
-    let error = calculated_player_pos_y - new_player_pos_y;
-    if (error) {
-        groundcollide();
-    }
-
-    for (let i = 0; i < mapData.platforms.length; i++) {
-        const element = mapData.platforms[i];
-        const iscollision = collidesWith(element, player_pos[1], new_player_pos_y - player_pos[1]);
-        if (iscollision) {
-            new_player_pos_y = Math.min(calculated_player_pos_y, element[1]);
-            groundcollide();
-        };
-    };
-
-
-
-    player_pos[1] = new_player_pos_y;
-
-    let playerDisplayPos = [(player_pos[0] - cam_pos[0]) * playerDepth + width / 2, (player_pos[1] - cam_pos[1]) * playerDepth + height / 2 + general_offset_y];
-    cam_pos[0] += (player_pos[0] - cam_pos[0]) * 0.03
-    cam_pos[1] += (player_pos[1] - cam_pos[1]) * 0.05
-
-    //draw the map
-    for (let index = 0; index < mapData.objects.length; index++) {
-        const element = mapData.objects[index];
+function handleDrawGame(playerDisplayPos, charSprite, options) {
+    //draw the back objects
+    for (let index = 0; index < mapData.objects.back.length; index++) {
+        const element = mapData.objects.back[index];
         draw_sprite(element[0], [(element[1] - cam_pos[0]) * element[4] + width / 2, (element[2] - cam_pos[1]) * element[4] + height / 2 + general_offset_y], element[3])
     }
 
@@ -466,6 +495,119 @@ function handleGame() {
     let hatSprite = hats[characterBuild[2].mod(hats.length)];
     draw_sprite(hatSprite, [charSprite.hat[0] * k, charSprite.hat[1] * k], 1.2 * playerW)
     resetMatrix();
+
+    //draw the exit
+
+    if (mapData.exit) {
+        let exit_pos = mapData.exit.exitpoint;
+        fill(0, 0, 0)
+        noStroke()
+        circle(exit_pos[0] - cam_pos[0] + width / 2, exit_pos[1] - cam_pos[1] + height / 2 + 100, exit_radius + Math.abs(Math.sin(millis() / 800 * 3.14) * Math.sin(millis() / 5000 * 3.14 + 2)) * add_radius)
+        if (prev_mapIndex !== mapIndex) {
+            exit_particles = [];
+            for (let i = 0; i < exit_particle_count; i++) {
+                exit_particles.push(getExitParticle(exit_pos))
+            }
+        }
+        for (let i = 0; i < exit_particles.length; i++) {
+            const part = exit_particles[i];
+            const angle = part[2];
+            const part_speed = particle_speed * part[3] / (particle_life + particle_life_rnd)
+            if (part[3] < 0) {
+                exit_particles[i] = getExitParticle(exit_pos)
+            } else {
+                part[0] += deltaTime * part_speed * Math.cos(angle);
+                part[1] += deltaTime * part_speed * Math.sin(angle);
+                part[3] -= deltaTime;
+                circle(part[0] - cam_pos[0] + width / 2, part[1] - cam_pos[1] + height / 2 + 100, part[3] / particle_life * particle_size);
+            }
+        }
+    }
+
+    //draw the front objects
+    for (let index = 0; index < mapData.objects.front.length; index++) {
+        const element = mapData.objects.front[index];
+        draw_sprite(element[0], [(element[1] - cam_pos[0]) * element[4] + width / 2, (element[2] - cam_pos[1]) * element[4] + height / 2 + general_offset_y], element[3])
+    }
+}
+
+let mapData;
+let mapIndex = 0;
+let prev_mapIndex;
+
+function handleGame() {
+    mapData = maps[mapIndex || 0];
+    if ((pressedKeys[" "] || pressedKeys.z || pressedKeys.arrowup) && !midair) {
+        player_vel[1] = -600;
+        midair = true;
+    } else if (pressedKeys.q || pressedKeys.arrowleft || pressedKeys.d || pressedKeys.arrowright) {
+        if (pressedKeys.q || pressedKeys.arrowleft) {
+            player_vel[0] -= player_accel;
+        }
+        if (pressedKeys.d || pressedKeys.arrowright) {
+            player_vel[0] += player_accel;
+        }
+    } else if (!midair) {
+        player_vel[0] /= 1.2;
+        player_rot /= 2;
+    }
+
+    player_vel[0] = Math.min(Math.max(player_vel[0], -max_hor_vel), max_hor_vel);
+
+    player_rot = -player_vel[0] / max_hor_vel * 10;
+
+    player_vel[1] += m * g * deltaTime;
+    background(255, 204, 0);
+    let charSprite = chars[characterBuild[0].mod(chars.length)];
+
+    player_pos[0] += player_vel[0] * deltaTime;
+    player_pos[0] = Math.min(Math.max(player_pos[0], mapData.area[0]), mapData.area[1])
+
+    let deltaY = player_vel[1] * deltaTime;
+    let calculated_player_pos_y = player_pos[1] + deltaY;
+    let new_player_pos_y = Math.min(calculated_player_pos_y, mapData.area[2]);
+    let error = calculated_player_pos_y - new_player_pos_y;
+    if (error) {
+        groundcollide();
+    }
+
+    for (let i = 0; i < mapData.platforms.length; i++) {
+        const element = mapData.platforms[i];
+        const iscollision = collidesWith(element, player_pos[1], new_player_pos_y - player_pos[1]);
+        if (iscollision) {
+            new_player_pos_y = Math.min(calculated_player_pos_y, element[1]);
+            groundcollide();
+        };
+    };
+
+    player_pos[1] = new_player_pos_y;
+
+
+    let playerDisplayPos = [(player_pos[0] - cam_pos[0]) * playerDepth + width / 2, (player_pos[1] - cam_pos[1]) * playerDepth + height / 2 + general_offset_y];
+    if (mapData.options.camfollow) {
+        cam_pos[0] += (player_pos[0] - cam_pos[0]) * 0.03
+        cam_pos[1] += (player_pos[1] - cam_pos[1]) * 0.05
+    }
+
+    handleDrawGame(playerDisplayPos, charSprite, mapData.options)
+
+    prev_mapIndex = mapIndex;
+
+    if (mapData.exit) {
+        let exitpos = mapData.exit.exitpoint
+        let dist = Math.sqrt((player_pos[0] - exitpos[0]) ** 2 + (player_pos[1] - exitpos[1]) ** 2);
+        squareColor = color(100, 50, 100);
+        squareColor.setAlpha(255 * (1 - ((Math.min(Math.max(dist - 200, 0), 300)) / 300)));
+        fill(squareColor);
+        noStroke()
+        rect(0, 0, width, height)
+        if (dist < (exit_radius / 2 - 40)) {
+            mapIndex = mapData.exit.exitindex;
+        };
+        fill(0, 0, 0);
+    };
+
+
 }
 
 //variables de temps
