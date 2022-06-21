@@ -38,6 +38,7 @@ let scene = 1;
 
 //son
 let soundplaying;
+let stomp;
 
 //def des variables globales
 let myCanvas;
@@ -75,6 +76,8 @@ function preload() {
         spriteImg = loadImage('game/sprites.png');
         spriteMap = loadJSON("game/sprite.map.json");
         soundTrack = createAudio('game/sound.mp3');
+        stomp = createAudio('game/stomp.mp3');
+        stomp.volume(0.2)
     } else {
         spriteImg = loadImage('https://raw.githubusercontent.com/FuriousBird/furiousbird.github.io/main/game/sprites.png');
         spriteMap = loadJSON("https://raw.githubusercontent.com/FuriousBird/furiousbird.github.io/main/game/sprite.map.json");
@@ -442,7 +445,7 @@ let maps;
 let defaultPlayerDepth = 1;
 let playerDepth = defaultPlayerDepth;
 
-let coin_size = 60;
+let coin_size = 145;
 let coin_delta_y = 20;
 
 let exit_radius = 2000;
@@ -486,8 +489,11 @@ let rocket_enter_progress;
 let can_enter_rocket = true;
 
 function groundcollide() {
+    if (midair){
+        stomp.play()
+    }
     midair = false;
-
+    
     player_vel[1] = 0;
 }
 
@@ -669,7 +675,7 @@ function handleDrawGame(playerDisplayPos, charSprite, options) {
                 mapData.coins[index] = null;
             } else {
                 let coin_offset_y = coin_delta_y * (Math.sin(millis() / 700 + index * 20) + 1) / 2;
-                draw_sprite(spriteMap.coin, [(element[0] - cam_pos[0]) * element[2] + width / 2, (element[1] - cam_pos[1] + coin_offset_y) * element[2] + height / 2 + general_offset_y], coin_size);
+                draw_sprite(spriteMap.tuc, [(element[0] - cam_pos[0]) * element[2] + width / 2, (element[1] - cam_pos[1] + coin_offset_y) * element[2] + height / 2 + general_offset_y], coin_size);
             }
         }
     }
