@@ -54,21 +54,24 @@
             load_lib()
         };
 
-        if (!["127.0.0.1", "localhost"].includes(document.location.hostname)) {
-            let scriptUrl = "https://raw.githubusercontent.com/FuriousBird/furiousbird.github.io/main/game/js/app.js";
-            const myRequest = new Request(scriptUrl, {
-                method: 'GET',
-            });
-            fetch(myRequest)
-                .then(response => {
-                    loadExternal()
-                })
-                .catch(() => {
-                    loadInternal()
-                });
-        } else {
-            loadInternal()
-        }
+        // if (!["127.0.0.1", "localhost"].includes(document.location.hostname)) {
+        //     let scriptUrl = "https://raw.githubusercontent.com/FuriousBird/furiousbird.github.io/main/game/js/app.js";
+        //     const myRequest = new Request(scriptUrl, {
+        //         method: 'GET',
+        //     });
+        //     fetch(myRequest)
+        //         .then(response => {
+        //             loadExternal()
+        //         })
+        //         .catch(() => {
+        //             loadInternal()
+        //         });
+        // } else {
+        //     loadInternal()
+        // }
+
+        loadInternal()
+
     </script>
 </body>
 
