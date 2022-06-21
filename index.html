@@ -7,8 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="game/css/style.css">
-    <script src="game/js/lib/p5.min.js"></script>
-    
 </head>
 
 <body>
@@ -24,11 +22,8 @@
         </div>
     </div>
     <main></main>
-    <script src="game/js/app.js"></script>
     <!-- app loader -->
-    <!-- <script>
-        //deprecated
-
+    <script>
         //THIS SCRIPT LOADS THE APP INTERNALLY OF REXTERNALLY (from github)
         //depending on wether it is reachable and wether this is running on a local dev. server
 
@@ -59,25 +54,22 @@
             load_lib()
         };
 
-        // if (!["127.0.0.1", "localhost"].includes(document.location.hostname)) {
-        //     let scriptUrl = "https://raw.githubusercontent.com/FuriousBird/furiousbird.github.io/main/game/js/app.js";
-        //     const myRequest = new Request(scriptUrl, {
-        //         method: 'GET',
-        //     });
-        //     fetch(myRequest)
-        //         .then(response => {
-        //             loadExternal()
-        //         })
-        //         .catch(() => {
-        //             loadInternal()
-        //         });
-        // } else {
-        //     loadInternal()
-        // }
-
-        loadInternal()
-
-    </script> -->
+        if (!["127.0.0.1", "localhost"].includes(document.location.hostname) || document.location.protocol === "file:")  {
+            let scriptUrl = "https://raw.githubusercontent.com/FuriousBird/furiousbird.github.io/main/game/js/app.js";
+            const myRequest = new Request(scriptUrl, {
+                method: 'GET',
+            });
+            fetch(myRequest)
+                .then(response => {
+                    loadExternal()
+                })
+                .catch(() => {
+                    loadInternal()
+                });
+        } else {
+            loadInternal()
+        }
+    </script>
 </body>
 
 </html>

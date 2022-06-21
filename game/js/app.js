@@ -72,11 +72,20 @@ function screen() {
 
 function preload() {
     //prechargement des textures depuis github
-    spriteImg = loadImage('game/sprites.png');
-    spriteMap = loadJSON("game/sprite.map.json");
-    soundTrack = createAudio('game/sound.mp3');
-    stomp = createAudio('game/stomp.mp3');
-    stomp.volume(0.2)
+    if (["localhost", "127.0.0.1"].includes(document.location.hostname)) {
+        spriteImg = loadImage('game/sprites.png');
+        spriteMap = loadJSON("game/sprite.map.json");
+        soundTrack = createAudio('game/sound.mp3');
+        stomp = createAudio('game/stomp.mp3');
+        stomp.volume(0.2)
+    } else {
+        spriteImg = loadImage('https://raw.githubusercontent.com/FuriousBird/furiousbird.github.io/main/game/sprites.png');
+        spriteMap = loadJSON("https://raw.githubusercontent.com/FuriousBird/furiousbird.github.io/main/game/sprite.map.json");
+        soundTrack = createAudio('https://raw.githubusercontent.com/FuriousBird/furiousbird.github.io/main/game/sound.mp3');
+        stomp = createAudio('https://raw.githubusercontent.com/FuriousBird/furiousbird.github.io/main/game/stomp.mp3');
+        stomp.volume(0.2)
+    }
+    
 
 }
 
