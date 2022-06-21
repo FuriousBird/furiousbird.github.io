@@ -487,7 +487,7 @@
         ]
     },
     "coin": {
-        "desc": "cool camera",
+        "desc": "coin to pickup",
         "pos": [
             100,
             1344
@@ -499,6 +499,96 @@
         "origin": [
             50,
             50
+        ]
+    },
+    "cloud": {
+        "desc": "cool cloud",
+        "pos": [
+            1574,
+            2087
+        ],
+        "size": [
+            512,
+            279
+        ],
+        "origin": [
+            256,
+            139
+        ]
+    },
+    "rocket":{
+        "desc": "wallace & gromit rocket",
+        "pos": [
+            0,
+            2421
+        ],
+        "size": [
+            315,
+            487
+        ],
+        "origin": [
+            157,
+            243
+        ]
+    },
+    "moon":{
+        "desc": "the moon",
+        "pos": [
+            2163,
+            1759
+        ],
+        "size": [
+            744,
+            744
+        ],
+        "origin": [
+            372,
+            372
+        ]
+    },
+    "wallace":{
+        "desc": "just wallace eating crackers + cheese",
+        "pos": [
+            438,
+            2433
+        ],
+        "size": [
+            585,
+            447
+        ],
+        "origin": [
+            292,
+            447
+        ]
+    },
+    "creation":{
+        "desc": "picture_pillars",
+        "pos": [
+            2331,
+            67
+        ],
+        "size": [
+            527,
+            549
+        ],
+        "origin": [
+            263,
+            274
+        ]
+    },
+    "credits":{
+        "desc": "credits",
+        "pos": [
+            1200,
+            2539
+        ],
+        "size": [
+            1130,
+            450
+        ],
+        "origin": [
+            559,
+            212
         ]
     }
 }
