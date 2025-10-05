@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="game/css/style.css">
+</head>
+
+<body>
+    <div id="dl_popup" class="hidden">
+        <div class="content">
+            <div id="quit"></div>
+            <div class="image">
+                <img src="" id="char_image" alt="Preview Of Your Character">
+            </div>
+            <div class="text">
+                <a id="blob_dl" href="" download="" title="Download Character">Download</a>
+            </div>
+        </div>
+    </div>
+    <main></main>
+    <!-- app loader -->
+    <script>
+        //THIS SCRIPT LOADS THE APP INTERNALLY OF REXTERNALLY (from github)
+        //depending on wether it is reachable and wether this is running on a local dev. server
+
+        function load_lib() {
+            let my_awesome_script = document.createElement('script');
+
+            my_awesome_script.setAttribute('src', 'game/js/lib/p5.min.js');
+
+            document.body.appendChild(my_awesome_script);
+
+        }
+
+        function loadExternal() {
+            let my_awesome_script = document.createElement('script');
+
+            my_awesome_script.setAttribute('src', scriptUrl);
+
+            document.body.appendChild(my_awesome_script);
+            load_lib()
+        };
+
+        function loadInternal() {
+            let my_awesome_script = document.createElement('script');
+
+            my_awesome_script.setAttribute('src', 'game/js/app.js');
+
+            document.body.appendChild(my_awesome_script);
+            load_lib()
+        };
+
+        if (!["127.0.0.1", "localhost"].includes(document.location.hostname) || document.location.protocol === "file:")  {
+            let scriptUrl = "https://raw.githubusercontent.com/FuriousBird/furiousbird.github.io/main/game/js/app.js";
+            const myRequest = new Request(scriptUrl, {
+                method: 'GET',
+            });
+            fetch(myRequest)
+                .then(response => {
+                    loadExternal()
+                })
+                .catch(() => {
+                    loadInternal()
+                });
+        } else {
+            loadInternal()
+        }
+    </script>
+</body>
+
+</html>
