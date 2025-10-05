@@ -169,24 +169,22 @@
         .pan-image {
             width: 250px;
             height: 250px;
-            background-image: url('img/pans_transp.png');
-            background-size: cover;
             margin: 0 auto 2rem;
             border-radius: 15px;
             overflow: hidden;
         }
         
-        /* Crop different parts of the pan image for each card */
-        .pan-card:nth-child(1) .pan-image {
-            background-position: 0% 0%;
+        .pan-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transform: translate(0px, 0px);
+            transition: object-fit 0.5s ease, transform 0.5s ease;
         }
         
-        .pan-card:nth-child(2) .pan-image {
-            background-position: 0% 50%;
-        }
-        
-        .pan-card:nth-child(3) .pan-image {
-            background-position: 0% 100%;
+        .pan-card:hover .pan-image img {
+            object-fit: cover;
+            transform: scale(1.2) translate(0px, 0px);
         }
         
         .pan-card h3 {
@@ -406,6 +404,11 @@
                 display: none;
             }
             
+            .hero {
+                padding: 60px 0;
+                min-height: 70vh;
+            }
+            
             .hero h1 {
                 font-size: 2.5rem;
             }
@@ -414,8 +417,16 @@
                 font-size: 1.5rem;
             }
             
+            .hero p {
+                font-size: 1rem !important;
+            }
+            
             .section-title {
                 font-size: 2rem;
+            }
+            
+            .pan-showcase {
+                padding: 60px 0;
             }
             
             .pans-grid {
@@ -423,8 +434,59 @@
                 gap: 2rem;
             }
             
+            .pan-card {
+                padding: 1.5rem;
+            }
+            
+            .pan-image {
+                width: 200px;
+                height: 200px;
+            }
+            
+            /* Disable hover effects on mobile for better UX */
+            .pan-card:hover {
+                transform: none;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            }
+            
+            .pan-card:hover .pan-image img {
+                object-fit: contain;
+                transform: translate(0px, 0px);
+            }
+            
+            .features {
+                padding: 60px 0;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .testimonial {
+                padding: 60px 0;
+            }
+            
             .testimonial blockquote {
                 font-size: 1.5rem;
+            }
+            
+            .pricing {
+                padding: 60px 0;
+            }
+            
+            .pricing-cards {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .contact {
+                padding: 60px 0;
+            }
+            
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
             }
         }
     </style>
@@ -466,21 +528,27 @@
             
             <div class="pans-grid">
                 <div class="pan-card">
-                    <div class="pan-image"></div>
+                    <div class="pan-image">
+                        <img src="img/pan1.png" alt="Crêpes and Pancake Pan">
+                    </div>
                     <h3>Crêpes and Pancake Pan</h3>
                     <p>To perfectly and evenly spread your dough. Never struggle with uneven cooking again!</p>
                     <div class="pan-price">$70</div>
                 </div>
                 
                 <div class="pan-card">
-                    <div class="pan-image"></div>
+                    <div class="pan-image">
+                        <img src="img/pan2.png" alt="Meat Pan">
+                    </div>
                     <h3>Meat Pan</h3>
                     <p>To never ever overcook your steak again! Smart temperature control for perfect results every time.</p>
                     <div class="pan-price">$70</div>
                 </div>
                 
                 <div class="pan-card">
-                    <div class="pan-image"></div>
+                    <div class="pan-image">
+                        <img src="img/pan3.png" alt="Sauce and Vegetable Pan">
+                    </div>
                     <h3>Sauce and Vegetable Pan</h3>
                     <p>High edges to prevent spills. Cover included for versatile cooking options.</p>
                     <div class="pan-price">$70</div>
