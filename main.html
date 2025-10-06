@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Order Your Goot Pan - Secure Checkout</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            height: 50px;
+        }
+
+        .progress-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .progress-step {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .progress-step.active {
+            background: #cc2f2f;
+            color: white;
+        }
+
+        .progress-line {
+            width: 40px;
+            height: 2px;
+            background: #e9ecef;
+        }
+
+        .progress-line.active {
+            background: #cc2f2f;
+        }
+
+        /* Main Content */
+        .order-container {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .order-form {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .form-section {
+            margin-bottom: 40px;
+        }
+
+        .form-section h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #cc2f2f;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f8f9fa;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #cc2f2f;
+            box-shadow: 0 0 0 3px rgba(204, 47, 47, 0.1);
+        }
+
+        .product-selector {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .product-selector:hover {
+            border-color: #cc2f2f;
+            transform: translateY(-2px);
+        }
+
+        .product-selector.selected {
+            border-color: #cc2f2f;
+            background: #fff5f5;
+        }
+
+        .product-info {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+
+        .product-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .product-price {
+            font-weight: 700;
+            color: #cc2f2f;
+            font-size: 1.2rem;
+        }
+
+        .card-icons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 25px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: #666;
+        }
+
+        .security-info {
+            background: #f0fff4;
+            border: 1px solid #6aa84f;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .security-info p {
+            margin: 0;
+            font-size: 14px;
+            color: #2d5016;
+        }
+
+        .submit-btn {
+            background: #cc2f2f;
+            color: white;
+            padding: 18px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: #6aa84f;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(204, 47, 47, 0.3);
+        }
+
+        /* Order Summary */
+        .order-summary {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 20px;
+        }
+
+        .summary-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #cc2f2f;
+        }
+
+        .guarantee-badge {
+            background: #6aa84f;
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+
+        .features-list {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .features-list li {
+            padding: 5px 0;
+            color: #666;
+        }
+
+        .features-list li:before {
+            content: '✓';
+            color: #6aa84f;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .order-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .order-form {
+                padding: 25px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <img src="img/logo.svg" alt="Goot Logo" class="logo">
+            <div class="progress-bar">
+                <div class="progress-step active">1</div>
+                <div class="progress-line active"></div>
+                <div class="progress-step">2</div>
+                <div class="progress-line"></div>
+                <div class="progress-step">3</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="order-container">
+            <!-- Order Form -->
+            <div class="order-form">
+                <form action="/success.html" method="GET" id="form_achat">
+                    
+                    <!-- Product Selection -->
+                    <div class="form-section">
+                        <h2>🍳 Choose Your Goot Pan</h2>
+                        
+                        <div class="form-group">
+                            <div class="product-selector" data-product="crepes" data-price="70">
+                                <div class="product-info">
+                                    <div>
+                                        <div class="product-name">Crêpes & Pancake Pan</div>
+                                        <small>Perfect and even dough spreading</small>
+                                    </div>
+                                    <div class="product-price">$70</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="product-selector" data-product="viande" data-price="70">
+                                <div class="product-info">
+                                    <div>
+                                        <div class="product-name">Meat Pan</div>
+                                        <small>Never overcook your steak again</small>
+                                    </div>
+                                    <div class="product-price">$70</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="product-selector" data-product="legumes" data-price="70">
+                                <div class="product-info">
+                                    <div>
+                                        <div class="product-name">Sauce & Vegetable Pan</div>
+                                        <small>High edges, cover included</small>
+                                    </div>
+                                    <div class="product-price">$70</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="product-selector" data-product="pack" data-price="180">
+                                <div class="product-info">
+                                    <div>
+                                        <div class="product-name">🎁 Complete 3-Pan Bundle</div>
+                                        <small>Best value - All three pans included</small>
+                                    </div>
+                                    <div class="product-price">$180</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="type_achat" id="type_achat" value="">
+                    </div>
+
+                    <!-- Personal Information -->
+                    <div class="form-section">
+                        <h2>👤 Personal Information</h2>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="first_name">First Name *</label>
+                                <input type="text" id="first_name" name="first_name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="last_name">Last Name *</label>
+                                <input type="text" id="last_name" name="last_name" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email Address *</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone">Phone Number *</label>
+                            <input type="tel" id="phone" name="phone" required>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Address -->
+                    <div class="form-section">
+                        <h2>🏠 Shipping Address</h2>
+                        
+                        <div class="form-group">
+                            <label for="address">Street Address *</label>
+                            <input type="text" id="address" name="address" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="city">City *</label>
+                                <input type="text" id="city" name="city" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="postal_code">Postal Code *</label>
+                                <input type="text" id="postal_code" name="postal_code" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="country">Country *</label>
+                            <select id="country" name="country" required>
+                                <option value="">Select Country</option>
+                                <option value="US">United States</option>
+                                <option value="CA">Canada</option>
+                                <option value="UK">United Kingdom</option>
+                                <option value="DE">Germany</option>
+                                <option value="FR">France</option>
+                                <option value="ES">Spain</option>
+                                <option value="IT">Italy</option>
+                                <option value="AU">Australia</option>
+                                <option value="JP">Japan</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Payment Information -->
+                    <div class="form-section">
+                        <h2>💳 Payment Information</h2>
+                        
+                        <div class="form-group">
+                            <label for="card_number">Card Number *</label>
+                            <input type="text" id="card_number" name="card_number" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                            <div class="card-icons">
+                                <div class="card-icon">VISA</div>
+                                <div class="card-icon">MC</div>
+                                <div class="card-icon">AMEX</div>
+                                <div class="card-icon">DISC</div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="expiry_date">Expiry Date *</label>
+                                <input type="text" id="expiry_date" name="expiry_date" placeholder="MM/YY" maxlength="5" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="cvv">Security Code (CVV) *</label>
+                                <input type="text" id="cvv" name="cvv" placeholder="123" maxlength="4" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cardholder_name">Cardholder Name *</label>
+                            <input type="text" id="cardholder_name" name="cardholder_name" required>
+                        </div>
+
+                        <div class="security-info">
+                            <p>🔒 Your payment information is encrypted and secure. We use industry-standard SSL encryption to protect your data.</p>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Complete Order 🚀</button>
+                </form>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <h3 class="summary-title">Order Summary</h3>
+                
+                <div id="selected-product" style="display: none;">
+                    <div class="summary-item">
+                        <span id="product-name">No product selected</span>
+                        <span id="product-price">$0</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Shipping</span>
+                        <span style="color: #6aa84f;">FREE</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Total</span>
+                        <span id="total-price">$0</span>
+                    </div>
+                </div>
+
+                <div id="no-product-message">
+                    <p style="color: #666; text-align: center; margin: 20px 0;">Please select a product to see pricing</p>
+                </div>
+
+                <div class="guarantee-badge">
+                    🛡️ 5-Year Warranty Included
+                </div>
+
+                <ul class="features-list">
+                    <li>AI-Assisted Cooking</li>
+                    <li>Voice Feedback System</li>
+                    <li>Smart Temperature Control</li>
+                    <li>100% Teflon-FREE</li>
+                    <li>Free Worldwide Delivery</li>
+                    <li>24/7 Customer Support</li>
+                </ul>
+
+                <div style="text-align: center; color: #666; font-size: 14px; margin-top: 20px;">
+                    <p>🔒 Secure Payment</p>
+                    <p>📞 +49 89 8765 4321</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Product selection
+        const productSelectors = document.querySelectorAll('.product-selector');
+        const typeAchatInput = document.getElementById('type_achat');
+        const selectedProductDiv = document.getElementById('selected-product');
+        const noProductMessage = document.getElementById('no-product-message');
+        const productNameSpan = document.getElementById('product-name');
+        const productPriceSpan = document.getElementById('product-price');
+        const totalPriceSpan = document.getElementById('total-price');
+
+        productSelectors.forEach(selector => {
+            selector.addEventListener('click', () => {
+                // Remove selection from all
+                productSelectors.forEach(s => s.classList.remove('selected'));
+                
+                // Add selection to clicked
+                selector.classList.add('selected');
+                
+                // Update hidden input
+                const product = selector.dataset.product;
+                const price = selector.dataset.price;
+                const name = selector.querySelector('.product-name').textContent;
+                
+                typeAchatInput.value = product;
+                
+                // Update summary
+                productNameSpan.textContent = name;
+                productPriceSpan.textContent = `$${price}`;
+                totalPriceSpan.textContent = `$${price}`;
+                
+                selectedProductDiv.style.display = 'block';
+                noProductMessage.style.display = 'none';
+            });
+        });
+
+        // Card number formatting
+        const cardNumberInput = document.getElementById('card_number');
+        cardNumberInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\s/g, '');
+            let formattedValue = value.replace(/(.{4})/g, '$1 ').trim();
+            if (formattedValue.length > 19) formattedValue = formattedValue.substring(0, 19);
+            e.target.value = formattedValue;
+        });
+
+        // Expiry date formatting
+        const expiryInput = document.getElementById('expiry_date');
+        expiryInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            e.target.value = value;
+        });
+
+        // CVV - numbers only
+        const cvvInput = document.getElementById('cvv');
+        cvvInput.addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+
+        // Form validation
+        document.getElementById('form_achat').addEventListener('submit', (e) => {
+            if (!typeAchatInput.value) {
+                e.preventDefault();
+                alert('Please select a product before proceeding.');
+                return false;
+            }
+        });
+    </script>
+</body>
+</html>
