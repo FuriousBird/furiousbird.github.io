@@ -543,29 +543,51 @@
     </div>
 
     <script>
-        // Get URL parameters to populate order details
-        function getUrlParams() {
-            const urlParams = new URLSearchParams(window.location.search);
-            return {
-                nom_client: urlParams.get('nom_client') || urlParams.get('first_name') || 'Valued Customer',
-                last_name: urlParams.get('last_name') || '',
-                type_achat: urlParams.get('type_achat') || 'pack',
-                email: urlParams.get('email') || ''
-            };
-        }
-
         // Product mapping
         const productMap = {
-            crepes: { name: 'Crêpes & Pancake Pan', price: '$70' },
-            viande: { name: 'Meat Pan', price: '$70' },
-            legumes: { name: 'Sauce & Vegetable Pan', price: '$70' },
-            pack: { name: 'Complete 3-Pan Bundle 🎁', price: '$180' }
+            crepes: { name: 'Crêpes & Pancake Pan', price: 70 },
+            viande: { name: 'Meat Pan', price: 70 },
+            legumes: { name: 'Sauce & Vegetable Pan', price: 70 },
+            pack: { name: 'Complete 3-Pan Bundle 🎁', price: 180 }
         };
+
+        // Get order data from sessionStorage (Firebase integration)
+        function getOrderData() {
+            try {
+                const orderData = sessionStorage.getItem('lastOrder');
+                if (orderData) {
+                    return JSON.parse(orderData);
+                }
+                
+                // Fallback to URL parameters if no sessionStorage data
+                const urlParams = new URLSearchParams(window.location.search);
+                return {
+                    first_name: urlParams.get('first_name') || 'Valued',
+                    last_name: urlParams.get('last_name') || 'Customer',
+                    product_type: urlParams.get('type_achat') || 'pack',
+                    price: Number(urlParams.get('price')) || 180,
+                    product_name: urlParams.get('product_name') || 'Complete 3-Pan Bundle',
+                    email: urlParams.get('email') || '',
+                    timestamp: new Date().toISOString()
+                };
+            } catch (error) {
+                console.error('Error getting order data:', error);
+                // Return default data
+                return {
+                    first_name: 'Valued',
+                    last_name: 'Customer',
+                    product_type: 'pack',
+                    price: 180,
+                    product_name: 'Complete 3-Pan Bundle 🎁',
+                    email: '',
+                    timestamp: new Date().toISOString()
+                };
+            }
+        }
 
         // Populate order details
         function populateOrderDetails() {
-            const params = getUrlParams();
-            const product = productMap[params.type_achat] || productMap.pack;
+            const orderData = getOrderData();
             
             // Generate order number based on current date and random number
             const orderNumber = `#GOOT-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 999999)).padStart(6, '0')}`;
@@ -573,18 +595,34 @@
             // Generate tracking number
             const trackingNumber = `GT${new Date().getFullYear()}${String(Math.floor(Math.random() * 99999999)).padStart(8, '0')}`;
             
+            // Format order date
+            const orderDate = new Date(orderData.timestamp);
+            const formattedDate = orderDate.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
             // Update DOM elements
             document.getElementById('order-number').textContent = orderNumber;
-            document.getElementById('product-ordered').textContent = product.name;
-            document.getElementById('customer-name').textContent = `${params.nom_client} ${params.last_name}`.trim();
-            document.getElementById('total-paid').textContent = product.price;
+            document.getElementById('product-ordered').textContent = orderData.product_name || orderData.product_type;
+            document.getElementById('customer-name').textContent = `${orderData.first_name} ${orderData.last_name}`.trim();
+            document.getElementById('total-paid').textContent = `$${orderData.price}`;
             document.getElementById('tracking-number').textContent = trackingNumber;
+            document.getElementById('order-date').textContent = formattedDate;
             
-            // Update email link with actual order number
+            // Update email link with actual order number and customer email
             const emailLink = document.querySelector('a[href^="mailto:"]');
             if (emailLink) {
-                emailLink.href = `mailto:support@goot.furiousbird.com?subject=Order%20${orderNumber.replace('#', '%23')}`;
+                const subject = `Order ${orderNumber} - Customer: ${orderData.first_name} ${orderData.last_name}`;
+                const body = `Order Details:%0A%0AOrder Number: ${orderNumber}%0ACustomer: ${orderData.first_name} ${orderData.last_name}%0AEmail: ${orderData.email}%0AProduct: ${orderData.product_name}%0ATotal: $${orderData.price}%0AOrder Date: ${formattedDate}%0A%0APlease describe your inquiry:`;
+                emailLink.href = `mailto:support@goot.furiousbird.com?subject=${encodeURIComponent(subject)}&body=${body}`;
             }
+            
+            // Clear sessionStorage after using the data
+            sessionStorage.removeItem('lastOrder');
         }
 
         // Generate confetti effect (optional visual enhancement)

@@ -6,6 +6,31 @@
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <title>Order Your Goot Pan - Secure Checkout</title>
+    
+    <!-- Firebase SDK imports -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+        
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCghXfzQM-L9_9cNGlKirLCLlzxY6hmi78",
+            authDomain: "gootapp-99c8e.firebaseapp.com",
+            projectId: "gootapp-99c8e",
+            storageBucket: "gootapp-99c8e.firebasestorage.app",
+            messagingSenderId: "928992031167",
+            appId: "1:928992031167:web:0e36ae71aaa8f903f5f10a"
+        };
+        
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        // Make Firebase available globally
+        window.firebaseDB = db;
+        window.addDoc = addDoc;
+        window.collection = collection;
+    </script>
     <style>
         * {
             margin: 0;
@@ -555,7 +580,8 @@
                 // Update hidden input
                 const product = selector.dataset.product;
                 const price = selector.dataset.price;
-                const name = selector.querySelector('.product-name').textContent;
+                const nameElement = selector.querySelector('.product-name');
+                const name = nameElement ? nameElement.textContent : 'Unknown Product';
                 
                 typeAchatInput.value = product;
                 
@@ -594,12 +620,99 @@
             e.target.value = e.target.value.replace(/\D/g, '');
         });
 
-        // Form validation
-        document.getElementById('form_achat').addEventListener('submit', (e) => {
-            if (!typeAchatInput.value) {
-                e.preventDefault();
-                alert('Please select a product before proceeding.');
-                return false;
+        // Firebase form submission - with delay to ensure Firebase is loaded
+        const form = document.getElementById("form_achat");
+        
+        // Wait for Firebase to be available
+        function waitForFirebase() {
+            return new Promise((resolve) => {
+                if (window.firebaseDB && window.addDoc && window.collection) {
+                    resolve();
+                } else {
+                    setTimeout(() => waitForFirebase().then(resolve), 100);
+                }
+            });
+        }
+        
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            // Only continue if a product is selected
+            const productType = document.getElementById("type_achat").value;
+            if (!productType) {
+                alert("Please select a product before proceeding.");
+                return;
+            }
+
+            // Show loading state
+            const submitBtn = document.querySelector('.submit-btn');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Processing Order... ⏳';
+            submitBtn.disabled = true;
+
+            // Get selected product element with null check
+            const selectedProduct = document.querySelector(".product-selector.selected");
+            if (!selectedProduct) {
+                alert("Please select a product before proceeding.");
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                return;
+            }
+
+            const selectedProductName = selectedProduct.querySelector(".product-name");
+            if (!selectedProductName) {
+                alert("Product information not found. Please refresh and try again.");
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                return;
+            }
+
+            // Collect only the safe fields (no sensitive payment data)
+            const orderData = {
+                first_name: form.first_name.value.trim(),
+                last_name: form.last_name.value.trim(),
+                email: form.email.value.trim(),
+                phone: form.phone.value.trim(),
+                address: form.address.value.trim(),
+                city: form.city.value.trim(),
+                postal_code: form.postal_code.value.trim(),
+                country: form.country.value,
+                product_type: productType,
+                product_name: selectedProductName.textContent,
+                price: Number(selectedProduct.dataset.price),
+                timestamp: new Date().toISOString(),
+                order_status: "pending",
+                payment_method: "credit_card",
+                cardholder_name: form.cardholder_name.value.trim(),
+                // Note: Sensitive payment info is NOT stored for security
+                payment_note: "Demo order - payment details not stored for security"
+            };
+
+            try {
+                // Wait for Firebase to be ready
+                await waitForFirebase();
+                
+                await window.addDoc(window.collection(window.firebaseDB, "orders"), orderData);
+                
+                // Success feedback
+                submitBtn.textContent = 'Order Saved! Redirecting... ✅';
+                
+                // Store order data for success page
+                sessionStorage.setItem('lastOrder', JSON.stringify(orderData));
+                
+                // Redirect to success page after short delay
+                setTimeout(() => {
+                    window.location.href = "/success.html";
+                }, 1500);
+                
+            } catch (error) {
+                console.error("Error saving order:", error);
+                
+                // Reset button and show error
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                
+                alert("There was an error submitting your order. Please try again.");
             }
         });
     </script>
