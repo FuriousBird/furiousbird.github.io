@@ -7,11 +7,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <title>Order Your Goot Pan - Secure Checkout</title>
     
-    <!-- Firebase SDK imports -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
-        
+    <!-- Firebase SDK imports - GitHub Pages compatible -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script>
         // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCghXfzQM-L9_9cNGlKirLCLlzxY6hmi78",
@@ -22,14 +21,15 @@
             appId: "1:928992031167:web:0e36ae71aaa8f903f5f10a"
         };
         
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        // Initialize Firebase (compat version for better GitHub Pages support)
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
         
         // Make Firebase available globally
         window.firebaseDB = db;
-        window.addDoc = addDoc;
-        window.collection = collection;
+        window.firebaseInitialized = true;
+        
+        console.log('🔥 Firebase initialized for GitHub Pages');
     </script>
     <style>
         * {
@@ -623,10 +623,10 @@
         // Firebase form submission - with delay to ensure Firebase is loaded
         const form = document.getElementById("form_achat");
         
-        // Wait for Firebase to be available
+        // Wait for Firebase to be available (compat version)
         function waitForFirebase() {
             return new Promise((resolve) => {
-                if (window.firebaseDB && window.addDoc && window.collection) {
+                if (window.firebaseDB && window.firebaseInitialized) {
                     resolve();
                 } else {
                     setTimeout(() => waitForFirebase().then(resolve), 100);
@@ -667,7 +667,7 @@
                 return;
             }
 
-            // Collect only the safe fields (no sensitive payment data)
+            // Collect only the safe fields (NO payment data for demo)
             const orderData = {
                 first_name: form.first_name.value.trim(),
                 last_name: form.last_name.value.trim(),
@@ -682,17 +682,16 @@
                 price: Number(selectedProduct.dataset.price),
                 timestamp: new Date().toISOString(),
                 order_status: "pending",
-                payment_method: "credit_card",
-                cardholder_name: form.cardholder_name.value.trim(),
-                // Note: Sensitive payment info is NOT stored for security
-                payment_note: "Demo order - payment details not stored for security"
+                // Note: This is a demo - no payment processing or card data stored
+                demo_note: "Demo order - payment fields are for UI demonstration only"
             };
 
             try {
                 // Wait for Firebase to be ready
                 await waitForFirebase();
                 
-                await window.addDoc(window.collection(window.firebaseDB, "orders"), orderData);
+                // Use Firebase compat API for GitHub Pages
+                await window.firebaseDB.collection("orders").add(orderData);
                 
                 // Success feedback
                 submitBtn.textContent = 'Order Saved! Redirecting... ✅';
